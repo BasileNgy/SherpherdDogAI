@@ -7,6 +7,7 @@ public class Environnement {
     {
         this.size = n;
 
+        map = new Room[n][n];
         SetupInitialState(nbreSheep);
     }
 
@@ -15,5 +16,10 @@ public class Environnement {
         for(int j=0;j<size;j++)
             for(int i=0;i<size;i++)
                 map[i][j] = new Room(i,j);
+    }
+
+    public void SetupSheeps(int n)
+    {
+
     }
 }
