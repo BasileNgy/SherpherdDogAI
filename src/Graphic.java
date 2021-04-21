@@ -8,12 +8,15 @@ public class Graphic extends JFrame {
     private final JPanel p;
     private int size;
     private ArrayList<JLabel> labelList;
+    private Room[][] map;
 
-    public Graphic()
+    public Graphic(Room[][] map)
     {
         f = new JFrame();
         p = new JPanel();
         labelList = new ArrayList<>();
+
+        this.map = map;
 
         SetNewEnvironnement(15);
 
@@ -40,7 +43,28 @@ public class Graphic extends JFrame {
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
 
-                JLabel lab = new JLabel(".");
+
+                JLabel lab = new JLabel();
+
+                String labText = "";
+                Room room = map[x][y];
+                if(!room.containsSheep && !room.containsEnclos && !room.containsDog)
+                    labText += ".";
+                else {
+                    if(room.containsEnclos)
+                        labText += " Enclos";
+                    if(room.containsDog)
+                        labText += " Dog";
+                    if(room.containsSheep)
+                        labText +="Sheep";
+                }
+
+                lab.setText(labText);
+                if(room.color == DogColor.BLUE)
+                    lab.setForeground(Color.BLUE);
+                else if(room.color == DogColor.RED)
+                    lab.setForeground(Color.RED);
+
                 lab.setHorizontalAlignment(SwingConstants.CENTER);
                 lab.setVerticalAlignment(SwingConstants.CENTER);
 

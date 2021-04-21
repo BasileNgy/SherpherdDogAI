@@ -1,19 +1,26 @@
 
-enum Direction
-{
-    HAUT,DROITE,BAS,GAUCHE
+enum Action {
+    HAUT, DROITE, BAS, GAUCHE, CATCH, RELEASE
 }
 
 public class Effecteur {
 
-    public void Deplacement(Direction dir, Dog dog)
-    {
-        switch(dir)
-        {
-            case HAUT -> dog.y --;
-            case DROITE -> dog.x ++;
-            case BAS -> dog.y ++;
-            case GAUCHE -> dog.x --;
+    public void Agir(Action act, Dog dog, Environnement env) {
+        switch (act) {
+            case HAUT -> dog.y--;
+            case DROITE -> dog.x++;
+            case BAS -> dog.y++;
+            case GAUCHE -> dog.x--;
+            case CATCH -> {
+                dog.sheepCarried++;
+                env.map[dog.x][dog.y].containsSheep = false;
+            }
+            case RELEASE -> {
+                dog.enclos.sheepsBrought += dog.sheepCarried;
+                dog.score += dog.sheepCarried;
+                dog.sheepCarried = 0;
+
+            }
         }
     }
 }

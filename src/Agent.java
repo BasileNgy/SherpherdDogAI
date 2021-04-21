@@ -13,24 +13,24 @@ public class Agent {
     {
 //      action = tourMax(n)
     }
-
+/*
     public void tourMax(Noeud n)
     {
-//       vérifier qu'un état final n'est pas atteint sinon on retourne l'utilité
+       vérifier qu'un état final n'est pas atteint sinon on retourne l'utilité
 
-//       on prends l'ensemble des actions possibles de dog1
-//            on récupére laction avec la plus haute utilité retourné par TourMin
+       on prends l'ensemble des actions possibles de dog1
+            on récupére laction avec la plus haute utilité retourné par TourMin
 
-//       return actionChoisie la plus profitable a dog1
-    }
+       return actionChoisie la plus profitable a dog1
+    }*/
 
-    public void tourMin(Noeud n)
+/*    public void tourMin(Noeud n)
     {
-//       vérifier qu'un état final n'est pas atteint sinon on retourne l'utilité
+       vérifier qu'un état final n'est pas atteint sinon on retourne l'utilité
 
-//       on prends l'ensemble des actions possibles de dog2
-//            on récupére laction avec la plus faible utilité retourné par TourMax
+       on prends l'ensemble des actions possibles de dog2
+            on récupére laction avec la plus faible utilité retourné par TourMax
 
-//       return actionChoisie la plus profitable a dog1
-    }
+       return actionChoisie la plus profitable a dog1
+    }*/
 }
