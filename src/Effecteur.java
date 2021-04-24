@@ -1,6 +1,6 @@
 
 enum Action {
-    HAUT, DROITE, BAS, GAUCHE, CATCH, RELEASE
+    HAUT, DROITE, BAS, GAUCHE, CATCH, RELEASE, NOTHING
 }
 
 public class Effecteur {

@@ -3,7 +3,7 @@ import java.util.Random;
 public class Environnement {
 
     public Room[][] map;
-    private int size;
+    public int size;
 
     public Environnement(int n, int nbreSheep)
     {
@@ -27,7 +27,7 @@ public class Environnement {
         Random rand = new Random();
         while (n > 0){
             Room room = map[rand.nextInt(size)][rand.nextInt(size)];
-            if( !room.containsSheep){
+            if( !room.containsSheep && !room.containsEnclos){
                 room.containsSheep = true;
                 n--;
             }

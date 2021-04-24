@@ -1,12 +1,25 @@
-public class Agent {
+public class Agents {
 
-    Dog dog1;
-    Dog dog2;
+    private AgentAStar agentAStar;
+    private Dog dog2;
+    private Environnement environnement;
 
-    public Agent()
+    public Agents(Dog dog1, Dog dog2, Environnement environnement)
+    {
+        agentAStar = new AgentAStar(dog1, environnement);
+        this.dog2 = dog2;
+        this.environnement = environnement;
+    }
+
+
+    public void ResolutionAlgorithms()
     {
 
     }
+
+
+
+
 
     //Pour dog1
     public void algoMiniMax()
@@ -33,4 +46,6 @@ public class Agent {
 
        return actionChoisie la plus profitable a dog1
     }*/
+
+
 }

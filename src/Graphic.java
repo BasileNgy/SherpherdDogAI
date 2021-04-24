@@ -18,7 +18,7 @@ public class Graphic extends JFrame {
 
         this.map = map;
 
-        SetNewEnvironnement(15);
+        SetNewEnvironnement(10);
 
         f.setLayout(new BorderLayout());
         f.add(p, BorderLayout.CENTER);
