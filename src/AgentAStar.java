@@ -24,13 +24,19 @@ public class AgentAStar {
 
     public void Resolution()
     {
+        System.out.println("A* Dog actual position : " + dog.x+":"+dog.y);
+
         //Récupération de l'objectif avec les capteurs
         SetupObjective();
+        System.out.println("A* Dog Objective : " + currentObjectiveX+ ":"+currentObjectiveY);
 
         // Choix de l'action possible
         Action action = ActionChoice();
+        System.out.println("A* Dog next action : " + action);
 
         // application de l'action
+        effecteur.Agir(action, dog, environnement);
+        System.out.println("A* Dog new position : " + dog.x+":"+dog.y);
     }
 
     private void SetupObjective()
@@ -56,14 +62,15 @@ public class AgentAStar {
     private Action ActionChoice()
     {
         Action actionChosen = Action.NOTHING;
-        distanceCurrentObjective = capteur.CalculManhanttanDistance(dog, currentObjectiveX, currentObjectiveY);
+        distanceCurrentObjective = capteur.CalculManhanttanDistance(dog.x, dog.y, currentObjectiveX, currentObjectiveY);
+        System.out.println("A* Dog Manhattan distance : " + distanceCurrentObjective);
 
         //si le chien est arrivé à  son objectif
         if (distanceCurrentObjective == 0)
         {
-            if(environnement.map[currentObjectiveX][currentObjectiveX].containsSheep)
+            if(environnement.map[dog.x][dog.y].containsSheep)
                 actionChosen = Action.CATCH;
-            if(dog.enclos.x == currentObjectiveX && dog.enclos.y == currentObjectiveY)
+            else if(dog.enclos.x == currentObjectiveX && dog.enclos.y == currentObjectiveY)
                 actionChosen = Action.RELEASE;
         }
         else
@@ -71,7 +78,7 @@ public class AgentAStar {
             ArrayList<Action> actionList = capteur.GetActionsPossibles(dog, environnement);
             actionChosen = actionList.get(0);
 
-            int potentialDistance = distanceCurrentObjective;
+            int minimalDistance = distanceCurrentObjective;
 
             //Choisi l'action qui réduit le plus la distance entre le dog et son objectif
             for (Action action: actionList)
@@ -86,9 +93,11 @@ public class AgentAStar {
                     case BAS -> y++;
                     case GAUCHE -> x--;
                 }
-                if(capteur.CalculManhanttanDistance(dog, x,y) < potentialDistance)
+
+                int calculedDistance = capteur.CalculManhanttanDistance(x, y, currentObjectiveX, currentObjectiveY);
+                if(calculedDistance < minimalDistance)
                 {
-                    potentialDistance = capteur.CalculManhanttanDistance(dog, x,y);
+                    minimalDistance = calculedDistance;
                     actionChosen = action;
                 }
             }
@@ -96,4 +105,5 @@ public class AgentAStar {
 
         return actionChosen;
     }
+
 }

@@ -1,5 +1,5 @@
 enum DogColor{
-    BLUE,RED
+    BLUE,RED,BLACK
 }
 
 public class Dog {

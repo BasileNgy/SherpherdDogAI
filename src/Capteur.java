@@ -16,7 +16,7 @@ public class Capteur {
             {
                 if(envir.map[i][j].containsSheep)
                 {
-                    int valueCalculated = CalculManhanttanDistance(dog, i, j);
+                    int valueCalculated = CalculManhanttanDistance(dog.x, dog.y, i, j);
                     if(valueCalculated < shortestManhattanDistance)
                     {
                         shortestManhattanDistance = valueCalculated;
@@ -30,9 +30,9 @@ public class Capteur {
         return new Point2D.Float(nearestSheepX, nearestSheepY);
     }
 
-    public int CalculManhanttanDistance(Dog dog, int x, int y)
+    public int CalculManhanttanDistance(int dogX, int dogY, int objX, int objY)
     {
-        return Math.abs(Math.abs(dog.x) - Math.abs(x)) + Math.abs(Math.abs(dog.y) - Math.abs(y));
+        return Math.abs(Math.abs(dogX) - Math.abs(objX)) + Math.abs(Math.abs(dogY) - Math.abs(objY));
     }
 
     public ArrayList<Action> GetActionsPossibles(Dog dog, Environnement envir)

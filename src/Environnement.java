@@ -27,7 +27,7 @@ public class Environnement {
         Random rand = new Random();
         while (n > 0){
             Room room = map[rand.nextInt(size)][rand.nextInt(size)];
-            if( !room.containsSheep && !room.containsEnclos){
+            if(!room.containsSheep || !room.containsEnclos){
                 room.containsSheep = true;
                 n--;
             }

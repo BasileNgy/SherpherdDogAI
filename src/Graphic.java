@@ -6,22 +6,24 @@ public class Graphic extends JFrame {
 
     private final JFrame f;
     private final JPanel p;
+    private final JButton btn;
     private int size;
     private ArrayList<JLabel> labelList;
-    private Room[][] map;
 
-    public Graphic(Room[][] map)
+    public Graphic(Environnement envir, Agents multiAgents)
     {
         f = new JFrame();
         p = new JPanel();
+        btn = new JButton("Action");
         labelList = new ArrayList<>();
 
-        this.map = map;
+        btn.addActionListener(e -> multiAgents.ResolutionAlgorithms());
 
-        SetNewEnvironnement(10);
+        SetNewEnvironnement(envir);
 
         f.setLayout(new BorderLayout());
         f.add(p, BorderLayout.CENTER);
+        f.add(btn, BorderLayout.SOUTH);
 
         f.setSize(800,800);
         f.setDefaultCloseOperation( EXIT_ON_CLOSE );
@@ -32,9 +34,9 @@ public class Graphic extends JFrame {
     /*
     RAZ du panel et de la list de label, initialisation de n² labels
      */
-    public void SetNewEnvironnement(int n)
+    public void SetNewEnvironnement(Environnement envir)
     {
-        size = n;
+        size = envir.size;
         p.removeAll();
         p.revalidate();
         p.repaint();
@@ -43,27 +45,7 @@ public class Graphic extends JFrame {
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
 
-
-                JLabel lab = new JLabel();
-
-                String labText = "";
-                Room room = map[x][y];
-                if(!room.containsSheep && !room.containsEnclos && !room.containsDog)
-                    labText += ".";
-                else {
-                    if(room.containsEnclos)
-                        labText += " Enclos";
-                    if(room.containsDog)
-                        labText += " Dog";
-                    if(room.containsSheep)
-                        labText +="Sheep";
-                }
-
-                lab.setText(labText);
-                if(room.color == DogColor.BLUE)
-                    lab.setForeground(Color.BLUE);
-                else if(room.color == DogColor.RED)
-                    lab.setForeground(Color.RED);
+                JLabel lab = SetLabelTextColor(envir.map[x][y], new JLabel());
 
                 lab.setHorizontalAlignment(SwingConstants.CENTER);
                 lab.setVerticalAlignment(SwingConstants.CENTER);
@@ -74,7 +56,41 @@ public class Graphic extends JFrame {
                 p.add(lab);
             }
         }
+        p.setLayout(new GridLayout(size,size));
+    }
 
-        p.setLayout(new GridLayout(n,n));
+    public void UpdateGraphic(Environnement envir)
+    {
+        for (int y = 0; y < size; y++) {
+            for (int x = 0; x < size; x++) {
+
+                SetLabelTextColor(envir.map[x][y], labelList.get(y * size + x));
+            }
+        }
+    }
+
+    private JLabel SetLabelTextColor(Room room, JLabel lab)
+    {
+        String labText = "";
+        lab.setForeground(Color.BLACK);
+
+        if(!room.containsSheep && !room.containsEnclos && !room.containsDog)
+            labText += ".";
+        else {
+            if(room.containsEnclos)
+                labText += " Enclos";
+            if(room.containsDog)
+                labText += " Dog";
+            if(room.containsSheep)
+                labText +="Sheep";
+        }
+
+        lab.setText(labText);
+        if(room.color == DogColor.BLUE)
+            lab.setForeground(Color.BLUE);
+        else if(room.color == DogColor.RED)
+            lab.setForeground(Color.RED);
+
+        return lab;
     }
 }

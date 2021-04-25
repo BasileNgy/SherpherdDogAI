@@ -3,18 +3,28 @@ public class Agents {
     private AgentAStar agentAStar;
     private Dog dog2;
     private Environnement environnement;
+    private Graphic graphic;
 
     public Agents(Dog dog1, Dog dog2, Environnement environnement)
     {
         agentAStar = new AgentAStar(dog1, environnement);
         this.dog2 = dog2;
         this.environnement = environnement;
+        System.out.println("A* Dog en haut à gauche");
+        System.out.println("MiniMax Dog en bas à droite\n");
     }
 
+    public void SetGraphicParameter(Graphic graph)
+    {
+        this.graphic = graph;
+    }
 
     public void ResolutionAlgorithms()
     {
-
+        System.out.println("Begin A* Algorithm");
+        agentAStar.Resolution();
+        System.out.print("\n");
+        graphic.UpdateGraphic(environnement);
     }
 
 
