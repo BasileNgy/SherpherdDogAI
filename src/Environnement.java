@@ -4,10 +4,12 @@ public class Environnement {
 
     public Room[][] map;
     public int size;
+    public int remainingSheeps;
 
     public Environnement(int n, int nbreSheep)
     {
         this.size = n;
+        remainingSheeps = 0;
 
         map = new Room[n][n];
         SetupInitialState(nbreSheep);
@@ -29,6 +31,7 @@ public class Environnement {
             Room room = map[rand.nextInt(size)][rand.nextInt(size)];
             if(!room.containsSheep || !room.containsEnclos){
                 room.containsSheep = true;
+                remainingSheeps ++;
                 n--;
             }
         }

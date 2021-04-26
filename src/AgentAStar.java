@@ -41,8 +41,8 @@ public class AgentAStar {
 
     private void SetupObjective()
     {
-        //test si le nmbre max de moutons transportés et atteint et retour à l'enclos
-        if(dog.sheepCarried == dog.maxSheepCarried)
+        //test si le nmbre max de moutons transportés est atteint et retour à l'enclos
+        if(dog.sheepCarried == dog.maxSheepCarried || environnement.remainingSheeps == 0)
         {
             currentObjectiveX = dog.enclos.x;
             currentObjectiveY = dog.enclos.y;

@@ -17,6 +17,7 @@ public class Effecteur {
             case CATCH -> {
                 dog.sheepCarried++;
                 env.map[dog.x][dog.y].containsSheep = false;
+                env.remainingSheeps--;
             }
             case RELEASE -> {
                 dog.enclos.sheepsBrought += dog.sheepCarried;
