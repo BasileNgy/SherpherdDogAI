@@ -18,7 +18,12 @@ public class AgentMiniMax {
 
     public void Resolution()
     {
+        //créer des objects nodes qui sont des copies de l'environnement pour chaque choix possible de MAX puis de MIN
+        //retourner l'utilité la plus adéquate pour chacun
+        //utilité de max doit être maximale et utilité de min doit être minimale
+        //tester l'ensemble des pairs
 
+        // ETUDIER ELAGAGE ALPHA BETA 
     }
 
     private int TourMax()
