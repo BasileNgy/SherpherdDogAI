@@ -1,6 +1,7 @@
 public class Agents {
 
     private AgentAStar agentAStar;
+    private AgentMiniMax agentMiniMax;
     private Dog dog2;
     private Environnement environnement;
     private Graphic graphic;
@@ -8,7 +9,7 @@ public class Agents {
     public Agents(Dog dog1, Dog dog2, Environnement environnement)
     {
         agentAStar = new AgentAStar(dog1, environnement);
-        this.dog2 = dog2;
+        agentMiniMax = new AgentMiniMax(dog2, dog1, environnement);
         this.environnement = environnement;
         System.out.println("A* Dog en haut à gauche");
         System.out.println("MiniMax Dog en bas à droite\n");
@@ -30,12 +31,6 @@ public class Agents {
 
 
 
-
-    //Pour dog1
-    public void algoMiniMax()
-    {
-//      action = tourMax(n)
-    }
 /*
     public void tourMax(Noeud n)
     {
