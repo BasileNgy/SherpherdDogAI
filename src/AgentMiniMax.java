@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class AgentMiniMax {
 
     private Dog maxDog; //minimax dog
@@ -5,6 +7,7 @@ public class AgentMiniMax {
     private Environnement environnement;
     private Capteur capteur;
     private Effecteur effecteur;
+    private ArrayList<Node> nodeList;
 
     public AgentMiniMax(Dog maxDog, Dog minDog, Environnement environnement)
     {
@@ -26,22 +29,17 @@ public class AgentMiniMax {
         // ETUDIER ELAGAGE ALPHA BETA 
     }
 
-    private int TourMax()
+    private int TourMax(Node node)
     {
-        if(IsFinalState())
-            return GetUtility();
+        if(node.isFinalState)
+            return node.utility;
+
+        int utility = -100;
+        Action chosenAction = null;
+
+        //ArrayList<Action> possibleAction = capteur.GetActionsPossibles(maxDog, )
 
         return 0;
-    }
-
-    private boolean IsFinalState()
-    {
-        return (environnement.remainingSheeps == 0 && maxDog.sheepCarried == 0 && minDog.sheepCarried == 0);
-    }
-
-    private int GetUtility()
-    {
-        return maxDog.score - minDog.score;
     }
 
 }
