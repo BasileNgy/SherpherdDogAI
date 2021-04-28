@@ -5,10 +5,21 @@ public class Environnement {
     public Room[][] map;
     public int size;
     public int remainingSheeps;
+    public Enclos enclosDogAStar;
+    public Enclos enclosDogMiniMax;
+    public Dog dogAStar;
+    public Dog dogMiniMax;
 
-    public Environnement(int n, int nbreSheep)
+    public Environnement(){
+        remainingSheeps = 0;
+    }
+    public Environnement(int n, int nbreSheep, Enclos enclosDogAStar, Enclos enclosDogMiniMax, Dog dogAStar, Dog dogMiniMax)
     {
         this.size = n;
+        this.enclosDogAStar = enclosDogAStar;
+        this.enclosDogMiniMax = enclosDogMiniMax;
+        this.dogAStar = dogAStar;
+        this.dogMiniMax = dogMiniMax;
         remainingSheeps = 0;
 
         map = new Room[n][n];
@@ -21,6 +32,15 @@ public class Environnement {
             for(int i=0;i<size;i++)
                 map[i][j] = new Room(i,j);
 
+
+        map[enclosDogAStar.x][enclosDogAStar.y].containsEnclos = true;
+        map[enclosDogAStar.x][enclosDogAStar.y].color = enclosDogAStar.color;
+        map[dogAStar.x][dogAStar.y].containsDog = true;
+
+        map[enclosDogMiniMax.x][enclosDogMiniMax.y].containsEnclos = true;
+        map[enclosDogMiniMax.x][enclosDogMiniMax.y].color = enclosDogMiniMax.color;
+        map[dogMiniMax.x][dogMiniMax.y].containsDog = true;
+
         SetupSheeps(nbreSheep);
     }
 
@@ -29,11 +49,16 @@ public class Environnement {
         Random rand = new Random();
         while (n > 0){
             Room room = map[rand.nextInt(size)][rand.nextInt(size)];
-            if(!room.containsSheep || !room.containsEnclos){
+            if(!room.containsSheep && !room.containsEnclos){
                 room.containsSheep = true;
                 remainingSheeps ++;
                 n--;
             }
         }
     }
+
+    public boolean MatchEnded(){
+        return (remainingSheeps == 0 && (dogAStar.AmIAtEnclos() &&dogAStar.sheepCarried == 0)&& (dogMiniMax.AmIAtEnclos() && dogMiniMax.sheepCarried == 0)) ? true : false;
+    }
 }
+

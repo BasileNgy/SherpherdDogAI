@@ -1,4 +1,4 @@
-public class Room {
+public class Room implements Cloneable{
 
     public int x,y;
     public String graphicText = "";
@@ -14,5 +14,20 @@ public class Room {
         containsSheep = false;
         containsEnclos = false;
         containsDog = false;
+        color = DogColor.BLACK;
     }
+
+    public Object clone(){
+        try
+        {
+            Room obj = (Room) super.clone();
+            obj.graphicText = "";
+            return obj;
+        }
+        catch (CloneNotSupportedException x)
+        {
+            return new InternalError("N'arrive jamais");
+        }
+    }
+
 }

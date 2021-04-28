@@ -72,7 +72,6 @@ public class Graphic extends JFrame {
     private JLabel SetLabelTextColor(Room room, JLabel lab)
     {
         String labText = "";
-        lab.setForeground(Color.BLACK);
 
         if(!room.containsSheep && !room.containsEnclos && !room.containsDog)
             labText += ".";
@@ -90,6 +89,7 @@ public class Graphic extends JFrame {
             lab.setForeground(Color.BLUE);
         else if(room.color == DogColor.RED)
             lab.setForeground(Color.RED);
+        else lab.setForeground(Color.BLACK);
 
         return lab;
     }

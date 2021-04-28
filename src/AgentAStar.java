@@ -11,7 +11,7 @@ public class AgentAStar {
     private Capteur capteur;
     private Effecteur effecteur;
 
-    public AgentAStar(Dog dog, Environnement environnement)
+    public AgentAStar(Environnement environnement, Dog dog)
     {
         this.dog = dog;
         this.environnement = environnement;
@@ -42,7 +42,7 @@ public class AgentAStar {
     private void SetupObjective()
     {
         //test si le nmbre max de moutons transportés est atteint et retour à l'enclos
-        if(dog.sheepCarried == dog.maxSheepCarried || environnement.remainingSheeps == 0)
+        if(dog.sheepCarried == dog.maxSheepCarried || !capteur.IsThereRemainingSheeps(environnement))
         {
             currentObjectiveX = dog.enclos.x;
             currentObjectiveY = dog.enclos.y;
@@ -55,13 +55,17 @@ public class AgentAStar {
                 Point2D objective = capteur.GetNearestObjective(dog, environnement);
                 currentObjectiveX = (int) objective.getX();
                 currentObjectiveY = (int) objective.getY();
+                if(currentObjectiveX == -1 || currentObjectiveY == -1){
+                    currentObjectiveX = dog.enclos.x;
+                    currentObjectiveY = dog.enclos.y;
+                }
             }
         }
     }
 
     private Action ActionChoice()
     {
-        Action actionChosen = Action.NOTHING;
+        Action actionChosen = Action.SLEEP;
         distanceCurrentObjective = capteur.CalculManhanttanDistance(dog.x, dog.y, currentObjectiveX, currentObjectiveY);
         System.out.println("A* Dog Manhattan distance : " + distanceCurrentObjective);
 
@@ -70,8 +74,13 @@ public class AgentAStar {
         {
             if(environnement.map[dog.x][dog.y].containsSheep)
                 actionChosen = Action.CATCH;
-            else if(dog.enclos.x == currentObjectiveX && dog.enclos.y == currentObjectiveY)
-                actionChosen = Action.RELEASE;
+            else if(dog.enclos.x == currentObjectiveX && dog.enclos.y == currentObjectiveY) {
+                if(!capteur.IsThereRemainingSheeps(environnement) && dog.sheepCarried == 0){
+                    return actionChosen;
+                } else {
+                    actionChosen = Action.RELEASE;
+                }
+            }
         }
         else
         {

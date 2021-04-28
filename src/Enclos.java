@@ -1,4 +1,4 @@
-public class Enclos {
+public class Enclos /*implements Cloneable*/{
 
     public int x,y;
     public int sheepsBrought;
@@ -11,4 +11,13 @@ public class Enclos {
         this.color = color;
         sheepsBrought = 0;
     }
+
+    /*public Object clone(){
+        try{
+            Enclos obj = (Enclos) super.clone();
+            return obj;
+        }catch (CloneNotSupportedException e){
+            return new InternalError("Impossible to clone Enclos' instance");
+        }
+    }*/
 }

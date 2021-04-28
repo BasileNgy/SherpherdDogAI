@@ -1,18 +1,21 @@
 public class Agents {
 
     private AgentAStar agentAStar;
+//    private AgentAStar agentAStar2;
     private AgentMiniMax agentMiniMax;
-    private Dog dog2;
     private Environnement environnement;
     private Graphic graphic;
+    private Dog previousDogMoving;
 
-    public Agents(Dog dog1, Dog dog2, Environnement environnement)
+    public Agents(Environnement environnement)
     {
-        agentAStar = new AgentAStar(dog1, environnement);
-        agentMiniMax = new AgentMiniMax(dog2, dog1, environnement);
         this.environnement = environnement;
+        agentAStar = new AgentAStar(environnement, environnement.dogAStar);
+//        agentAStar2 = new AgentAStar(environnement, environnement.dogMiniMax);
+        agentMiniMax = new AgentMiniMax(environnement, environnement.dogAStar, environnement.dogMiniMax);
         System.out.println("A* Dog en haut à gauche");
         System.out.println("MiniMax Dog en bas à droite\n");
+        previousDogMoving = environnement.dogMiniMax;
     }
 
     public void SetGraphicParameter(Graphic graph)
@@ -22,35 +25,33 @@ public class Agents {
 
     public void ResolutionAlgorithms()
     {
-        System.out.println("Begin A* Algorithm");
-        agentAStar.Resolution();
-        System.out.print("\n");
+
+        if(environnement.MatchEnded()){
+            System.out.println("Match done !");
+            System.out.println("Score : Dog 1 ["+environnement.dogAStar.score+"] - Dog 2 ["+environnement.dogMiniMax.score+"]");
+            if(environnement.dogAStar.score == environnement.dogMiniMax.score){
+                System.out.println("Draw");
+                return;
+            }
+            String winner = (environnement.dogAStar.score > environnement.dogMiniMax.score) ? "Dog 1" :  "Dog 2";
+            System.out.println("Winner : " + winner);
+            return;
+        }
+        if(previousDogMoving == environnement.dogMiniMax){
+            System.out.println("Begin A* Algorithm");
+            agentAStar.Resolution();
+            System.out.print("\n");
+            previousDogMoving = environnement.dogAStar;
+        }
+        else {
+            System.out.println("Begin MiniMax Algorithm");
+            agentMiniMax.Resolution();
+            System.out.print("\n");
+            previousDogMoving = environnement.dogMiniMax;
+        }
+
         graphic.UpdateGraphic(environnement);
     }
-
-
-
-
-/*
-    public void tourMax(Noeud n)
-    {
-       vérifier qu'un état final n'est pas atteint sinon on retourne l'utilité
-
-       on prends l'ensemble des actions possibles de dog1
-            on récupére laction avec la plus haute utilité retourné par TourMin
-
-       return actionChoisie la plus profitable a dog1
-    }*/
-
-/*    public void tourMin(Noeud n)
-    {
-       vérifier qu'un état final n'est pas atteint sinon on retourne l'utilité
-
-       on prends l'ensemble des actions possibles de dog2
-            on récupére laction avec la plus faible utilité retourné par TourMax
-
-       return actionChoisie la plus profitable a dog1
-    }*/
 
 
 }
