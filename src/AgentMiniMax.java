@@ -23,29 +23,48 @@ public class AgentMiniMax {
     public void Resolution()
     {
         System.out.println("Initializing node");
-        Node initialNode = new Node(environnement, maxDog);
+
+        Enclos minimaxEnclos = new Enclos(
+                environnement.enclosDogMiniMax.x,
+                environnement.enclosDogMiniMax.y,
+                environnement.enclosDogMiniMax.color
+        );
+        Dog minimaxDog = new Dog(environnement.dogMiniMax.maxSheepCarried,
+                minimaxEnclos,
+                environnement.dogMiniMax.myColor,
+                environnement.dogMiniMax.enemyColor,
+                environnement.dogMiniMax.x,
+                environnement.dogMiniMax.y
+        );
+
+        Node initialNode = new Node(environnement, minimaxDog);
         System.out.println("Launching MiniMax");
         Action chosenAction = MiniMax(initialNode);
+
         System.out.println("MiniMax Done");
-        effecteur.Agir(chosenAction, maxDog, environnement);
-        System.out.println("ActionApplied");
+        effecteur.Agir(chosenAction, minimaxDog, environnement);
+
+        System.out.println("ActionApplied : "+chosenAction);
     }
 
     private Action MiniMax(Node initialNode){
-        System.out.println("Launching TourMax from Minimax");
-        HashMap<Integer, Action> tourMaxResult = TourMax(initialNode);
+        HashMap<Integer, Action> tourMaxResult = TourMax(initialNode, 5, 0);
+
         System.out.println("Getting Action");
         Action chosenAction = tourMaxResult.values().stream().findFirst().get();
+
         System.out.println("Got Action");
         return chosenAction;
 
     }
-    private HashMap<Integer, Action> TourMax(Node node)
+    private HashMap<Integer, Action> TourMax(Node node, int maxDepth, int currentDepth)
     {
+        if(currentDepth >= maxDepth)
+            return null;
         HashMap<Integer, Action> result = new HashMap<>();
         if(node.isFinalState){
             System.out.println("[max] Found Final State");
-            result.put(node.utility, Action.SLEEP);
+            result.put(node.utility, Action.NOTHING);
             return result;
         }
 
@@ -55,32 +74,51 @@ public class AgentMiniMax {
 
         Dog currentDog = node.environnement.dogMiniMax;
         ArrayList<Action> possibleActions = new ArrayList<>();
+
+
+
+        System.out.println("Depth : "+currentDepth+" [max] Current dog ("+currentDog.myColor+") position : "+currentDog.x+","+currentDog.y);
+
         if(!capteur.IsThereRemainingSheeps(node.environnement) && currentDog.sheepCarried == 0)
             possibleActions.add(Action.SLEEP);
         if(currentDog.AmIAtEnclos() && currentDog.sheepCarried > 0)
             possibleActions.add(Action.RELEASE);
         if(node.environnement.map[currentDog.x][currentDog.y].containsSheep)
             possibleActions.add(Action.CATCH);
-        possibleActions = capteur.GetActionsPossibles(currentDog, node.environnement);
-        System.out.println("[max] Got Possible Actions");
+        possibleActions.addAll(capteur.GetActionsPossibles(currentDog, node.environnement));
+//        System.out.println("[max] Got Possible Actions");
+//        System.out.println(currentDog.myColor+" dog int position ["+currentDog.x+","+currentDog.y+"]");
 
         int count = 0;
+//        for (Action action : possibleActions ) {
+//            count++;
+//            System.out.println("Action "+count+" : "+action);
+//        }
+//        count = 0 ;
+
         for(Action action : possibleActions){
             count++;
-            System.out.println("[max] Action "+count);
-            Node testNode = node.GenerateNextNode(action, maxDog);
-            System.out.println("[max] Test node Generated, launching TourMin");
-            HashMap<Integer, Action> recursiveResult = TourMin(testNode);
-            System.out.println("[max] TourMin Done");
-            int testUtility = recursiveResult.keySet().stream().findFirst().get();
-            Action testAction = recursiveResult.values().stream().findFirst().get();
+//            System.out.println("[max] Action "+count);
+
+            System.out.println("Depth : "+currentDepth+" Action " +count + " [max] Generate node with Action : "+action+" Dog : " + node.environnement.dogMiniMax.myColor+" "+node.environnement.dogMiniMax.x+","+node.environnement.dogMiniMax.y);
+            Node testNode = node.GenerateNextNode(action, node.environnement.dogMiniMax);
+            System.out.println("Depth : "+currentDepth+" Action " +count + " [max] Test node utility : "+ testNode.utility);
+//            System.out.println("[max] Test node Generated, launching TourMin");
+            HashMap<Integer, Action> recursiveResult = TourMin(testNode, maxDepth, currentDepth + 1);
+            System.out.println("Depth : "+currentDepth+" Action " +count + " [max] TourMin Done");
+            int testUtility = 0;
+            Action testAction = Action.NOTHING;
+            if(recursiveResult != null) {
+                testUtility = recursiveResult.keySet().stream().findFirst().get();
+                testAction = recursiveResult.values().stream().findFirst().get();
+            }
             if( testUtility > bestUtility) {
-                System.out.println("[max] test accepted");
+                System.out.println("Depth : "+currentDepth+" Action " +count + "[max] "+testUtility+":"+bestUtility+" : test accepted");
                 bestAction = testAction;
                 bestUtility = testUtility;
             }
             else{
-                System.out.println("[max] test not accepted");
+                System.out.println("Depth : "+currentDepth+" Action " +count + "[max] "+testUtility+":"+bestUtility+" :  test not accepted");
             }
         }
 
@@ -88,12 +126,14 @@ public class AgentMiniMax {
         return result;
     }
 
-    private HashMap<Integer, Action> TourMin(Node node)
+    private HashMap<Integer, Action> TourMin(Node node, int maxDepth, int currentDepth)
     {
+        if(currentDepth >= maxDepth)
+            return null;
         HashMap<Integer, Action> result = new HashMap<>();
         if(node.isFinalState){
             System.out.println("[min] Found Final State");
-            result.put(node.utility, Action.SLEEP);
+            result.put(node.utility, Action.NOTHING);
             return result;
         }
 
@@ -102,32 +142,46 @@ public class AgentMiniMax {
 
         Dog currentDog = node.environnement.dogAStar;
         ArrayList<Action> possibleActions = new ArrayList<>();
+
+        System.out.println("Depth : "+currentDepth+" [min] Current dog ("+currentDog.myColor+") position : "+currentDog.x+","+currentDog.y);
+
         if(!capteur.IsThereRemainingSheeps(node.environnement) && currentDog.sheepCarried == 0)
             possibleActions.add(Action.SLEEP);
         if(currentDog.AmIAtEnclos() && currentDog.sheepCarried > 0)
             possibleActions.add(Action.RELEASE);
         if(node.environnement.map[currentDog.x][currentDog.y].containsSheep)
             possibleActions.add(Action.CATCH);
-        possibleActions = capteur.GetActionsPossibles(currentDog, node.environnement);
-        System.out.println("[max] Got Possible Actions");
-
+        possibleActions.addAll(capteur.GetActionsPossibles(currentDog, node.environnement));
+//        System.out.println("[max] Got Possible Actions");
+//        System.out.println(currentDog.myColor+" dog int position ["+currentDog.x+","+currentDog.y+"]");
         int count = 0;
+//        for (Action action : possibleActions ) {
+//            count++;
+//            System.out.println("Action "+count+" : "+action);
+//        }
+//        count = 0 ;
         for(Action action : possibleActions){
             count++;
-            System.out.println("[min] Action "+count);
-            Node testNode = node.GenerateNextNode(action, minDog);
-            System.out.println("[min] Test node Generated, launching TourMax");
-            HashMap<Integer, Action> recursiveResult = TourMax(testNode);
-            System.out.println("[min] TourMax Done");
-            int testUtility = recursiveResult.keySet().stream().findFirst().get();
-            Action testAction = recursiveResult.values().stream().findFirst().get();
+//            System.out.println("[min] Action "+count);
+            System.out.println("Depth : "+currentDepth+" Action " +count + " [min] Generate node with Action : "+action+" Dog : " + node.environnement.dogAStar.myColor+" "+node.environnement.dogAStar.x+","+node.environnement.dogAStar.y);
+            Node testNode = node.GenerateNextNode(action, node.environnement.dogAStar);
+            System.out.println("Depth : "+currentDepth+" Action " +count + " [mmin] Test node utility : "+ testNode.utility);
+//            System.out.println("[min] Test node Generated, launching TourMax");
+            HashMap<Integer, Action> recursiveResult = TourMax(testNode, maxDepth, currentDepth +1);
+            System.out.println("Depth : "+currentDepth+" Action " +count + " [min] TourMax Done");
+            int testUtility = 0;
+            Action testAction = Action.NOTHING;
+            if(recursiveResult != null) {
+                testUtility = recursiveResult.keySet().stream().findFirst().get();
+                testAction = recursiveResult.values().stream().findFirst().get();
+            }
             if( testUtility < bestUtility) {
-                System.out.println("[min] test accepted");
+                System.out.println("Depth : "+currentDepth+" Action " +count + " [min]  "+testUtility+":"+bestUtility+" : test accepted");
                 bestAction = testAction;
                 bestUtility = testUtility;
             }
             else{
-                System.out.println("[min] test not accepted");
+                System.out.println("Depth : "+currentDepth+" Action " +count + " [min] "+testUtility+":"+bestUtility+" :  test not accepted");
             }
 
         }

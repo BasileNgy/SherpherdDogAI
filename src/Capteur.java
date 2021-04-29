@@ -42,14 +42,22 @@ public class Capteur {
     public ArrayList<Action> GetActionsPossibles(Dog dog, Environnement envir)
     {
         ArrayList<Action> actionList = new ArrayList<>();
-        if(dog.y >= 1 && envir.map[dog.x][dog.y - 1].color != dog.enemyColor)
+        if(dog.y >= 1) {
+            if(envir.map[dog.x][dog.y - 1].color != dog.enemyColor)
             actionList.add(Action.HAUT);
-        if(dog.x <= envir.size-2 && envir.map[dog.x + 1][dog.y].color != dog.enemyColor)
+        }
+        if(dog.x <= envir.size-2) {
+            if(envir.map[dog.x + 1][dog.y].color != dog.enemyColor)
             actionList.add(Action.DROITE);
-        if(dog.y <= envir.size-2 && envir.map[dog.x][dog.y + 1].color != dog.enemyColor)
+        }
+        if(dog.y <= envir.size-2) {
+            if(envir.map[dog.x][dog.y + 1].color != dog.enemyColor)
             actionList.add(Action.BAS);
-        if(dog.x >= 1 && envir.map[dog.x - 1][dog.y].color != dog.enemyColor)
+        }
+        if(dog.x >= 1) {
+            if(envir.map[dog.x - 1][dog.y].color != dog.enemyColor)
             actionList.add(Action.GAUCHE);
+        }
 
         return actionList;
     }

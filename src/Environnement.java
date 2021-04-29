@@ -45,7 +45,7 @@ public class Environnement {
     }
 
     public void SetupSheeps(int n)
-    {
+    {/*
         Random rand = new Random();
         while (n > 0){
             Room room = map[rand.nextInt(size)][rand.nextInt(size)];
@@ -54,7 +54,9 @@ public class Environnement {
                 remainingSheeps ++;
                 n--;
             }
-        }
+        }*/
+        map[1][0].containsSheep = true;
+        remainingSheeps ++;
     }
 
     public boolean MatchEnded(){

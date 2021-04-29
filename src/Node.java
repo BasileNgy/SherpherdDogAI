@@ -9,24 +9,51 @@ public class Node {
     public Node(Environnement environnement, Dog activeDog){
         this.environnement = new Environnement();
         InitializeNodeEnvironment(environnement);
-        this.activeDog = activeDog;
+        if(activeDog.myColor == DogColor.RED)
+            this.activeDog = this.environnement.dogMiniMax;
+        else this.activeDog = this.environnement.dogAStar;
     }
 
     public Node(Environnement environnement, Dog activeDog, Action action) {
         this.environnement = new Environnement();
         InitializeNodeEnvironment(environnement);
+        /*
 
-        this.activeDog = activeDog;
+    public Room[][] map;
+    public int size;
+    public int remainingSheeps;
+    public Enclos enclosDogAStar;
+    public Enclos enclosDogMiniMax;
+    public Dog dogAStar;
+    public Dog dogMiniMax;
+         */
+
+//        System.out.println("Node initialized correctly ! Size : "+this.environnement.size+" RemainingSheeps : "+this.environnement.remainingSheeps);
+
+        if(activeDog.myColor == DogColor.RED)
+            this.activeDog = this.environnement.dogMiniMax;
+        else this.activeDog = this.environnement.dogAStar;
+
+//        System.out.println("["+activeDog.myColor+"] Active dog position : "+activeDog.y+","+activeDog.y);
 
         mockEffecteur = new Effecteur();
-        mockEffecteur.Agir(action, activeDog, environnement);
 
+        System.out.println("[bef] Active dog ("+this.activeDog.myColor+") sheeps : " + this.activeDog.sheepCarried + " " +
+                "dogAStar sheeps : "+ this.environnement.dogAStar.sheepCarried+" " +
+                "dogMiniMax sheeps : "+this.environnement.dogAStar.sheepCarried);
+
+
+        mockEffecteur.Agir(action, this.activeDog, this.environnement);
+
+        System.out.println("[af] Active dog ("+this.activeDog.myColor+") sheeps : " + this.activeDog.sheepCarried + " " +
+                "dogAStar sheeps : "+ this.environnement.dogAStar.sheepCarried+" " +
+                "dogMiniMax sheeps : "+this.environnement.dogAStar.sheepCarried);
 
         isFinalState = this.environnement.MatchEnded();
-        utility = this.environnement.dogMiniMax.score +this.environnement.dogMiniMax.sheepCarried
+        utility = this.environnement.dogMiniMax.score + this.environnement.dogMiniMax.sheepCarried
                 - this.environnement.dogAStar.score - this.environnement.dogAStar.sheepCarried;
-        System.out.println("New node generated. Node active dog : "+activeDog.myColor+". " +
-                "Node utility : "+utility+". Node is a final state ? "+isFinalState);
+//        System.out.println("New node generated. Node active dog : "+activeDog.myColor+". " +
+//                "Node utility : "+utility+". Node is a final state ? "+isFinalState);
     }
 
     public void InitializeNodeEnvironment(Environnement environnement) {
@@ -40,7 +67,9 @@ public class Node {
                 environnement.dogAStar.maxSheepCarried,
                 this.environnement.enclosDogAStar,
                 environnement.dogAStar.myColor,
-                environnement.dogAStar.enemyColor);
+                environnement.dogAStar.enemyColor,
+                environnement.dogAStar.x,
+                environnement.dogAStar.y);
 
         this.environnement.enclosDogMiniMax = new Enclos(
                 environnement.enclosDogMiniMax.x,
@@ -51,14 +80,19 @@ public class Node {
                 environnement.dogMiniMax.maxSheepCarried,
                 this.environnement.enclosDogMiniMax,
                 environnement.dogMiniMax.myColor,
-                environnement.dogMiniMax.enemyColor);
+                environnement.dogMiniMax.enemyColor,
+                environnement.dogMiniMax.x,
+                environnement.dogMiniMax.y);
 
 
         this.environnement.size = environnement.size;
         this.environnement.map = new Room[this.environnement.size][this.environnement.size];
         for (int i = 0 ; i < this.environnement.size ; i++)
-            for (int j = 0 ; j < this.environnement.size ; j++)
+            for (int j = 0 ; j < this.environnement.size ; j++) {
+//                System.out.println("Initial map contains sheep ? "+environnement.map[i][j].containsSheep);
                 this.environnement.map[i][j] = (Room) environnement.map[i][j].clone();
+//                System.out.println("New map contains sheep ? "+this.environnement.map[i][j].containsSheep);
+            }
 
         this.environnement.remainingSheeps = environnement.remainingSheeps;
 
