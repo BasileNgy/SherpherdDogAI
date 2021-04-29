@@ -55,12 +55,14 @@ public class Environnement {
                 n--;
             }
         }*/
-        map[1][0].containsSheep = true;
+        //map[1][0].containsSheep = true;
+        map[2][1].containsSheep = true;
+        //map[0][2].containsSheep = true;
         remainingSheeps ++;
     }
 
     public boolean MatchEnded(){
-        return (remainingSheeps == 0 && (dogAStar.AmIAtEnclos() &&dogAStar.sheepCarried == 0)&& (dogMiniMax.AmIAtEnclos() && dogMiniMax.sheepCarried == 0)) ? true : false;
+        return remainingSheeps == 0 && dogAStar.sheepCarried == 0 && dogMiniMax.sheepCarried == 0;
     }
 }
 

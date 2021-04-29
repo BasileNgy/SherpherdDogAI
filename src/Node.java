@@ -47,7 +47,7 @@ public class Node {
 
         System.out.println("[af] Active dog ("+this.activeDog.myColor+") sheeps : " + this.activeDog.sheepCarried + " " +
                 "dogAStar sheeps : "+ this.environnement.dogAStar.sheepCarried+" " +
-                "dogMiniMax sheeps : "+this.environnement.dogAStar.sheepCarried);
+                "dogMiniMax sheeps : "+this.environnement.dogMiniMax.sheepCarried);
 
         isFinalState = this.environnement.MatchEnded();
         utility = this.environnement.dogMiniMax.score + this.environnement.dogMiniMax.sheepCarried
