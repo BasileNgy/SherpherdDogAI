@@ -23,8 +23,10 @@ public class Node {
 
 
         isFinalState = this.environnement.MatchEnded();
-        utility = this.environnement.dogMiniMax.score +this.environnement.dogMiniMax.sheepCarried - this.environnement.dogAStar.score - this.environnement.dogAStar.sheepCarried;
-        System.out.println("New node generated. Node active dog : "+activeDog.myColor+". Node utility : "+utility+". Node is a final state ? "+isFinalState);
+        utility = this.environnement.dogMiniMax.score +this.environnement.dogMiniMax.sheepCarried
+                - this.environnement.dogAStar.score - this.environnement.dogAStar.sheepCarried;
+        System.out.println("New node generated. Node active dog : "+activeDog.myColor+". " +
+                "Node utility : "+utility+". Node is a final state ? "+isFinalState);
     }
 
     public void InitializeNodeEnvironment(Environnement environnement) {

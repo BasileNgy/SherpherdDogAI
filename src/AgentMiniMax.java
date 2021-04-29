@@ -52,11 +52,18 @@ public class AgentMiniMax {
         int bestUtility = Integer.MIN_VALUE;
         Action bestAction = null;
 
-        ArrayList<Action> possibleActions = capteur.GetActionsPossibles(maxDog, environnement);
+
+        Dog currentDog = node.environnement.dogMiniMax;
+        ArrayList<Action> possibleActions = new ArrayList<>();
+        if(!capteur.IsThereRemainingSheeps(node.environnement) && currentDog.sheepCarried == 0)
+            possibleActions.add(Action.SLEEP);
+        if(currentDog.AmIAtEnclos() && currentDog.sheepCarried > 0)
+            possibleActions.add(Action.RELEASE);
+        if(node.environnement.map[currentDog.x][currentDog.y].containsSheep)
+            possibleActions.add(Action.CATCH);
+        possibleActions = capteur.GetActionsPossibles(currentDog, node.environnement);
         System.out.println("[max] Got Possible Actions");
-        possibleActions.add(Action.CATCH);
-        possibleActions.add(Action.RELEASE);
-        possibleActions.add(Action.SLEEP);
+
         int count = 0;
         for(Action action : possibleActions){
             count++;
@@ -93,11 +100,17 @@ public class AgentMiniMax {
         int bestUtility = Integer.MAX_VALUE;
         Action bestAction = null;
 
-        ArrayList<Action> possibleActions = capteur.GetActionsPossibles(minDog, environnement);
-        System.out.println("[min] Got Possible Actions");
-        possibleActions.add(Action.CATCH);
-        possibleActions.add(Action.RELEASE);
-        possibleActions.add(Action.SLEEP);
+        Dog currentDog = node.environnement.dogAStar;
+        ArrayList<Action> possibleActions = new ArrayList<>();
+        if(!capteur.IsThereRemainingSheeps(node.environnement) && currentDog.sheepCarried == 0)
+            possibleActions.add(Action.SLEEP);
+        if(currentDog.AmIAtEnclos() && currentDog.sheepCarried > 0)
+            possibleActions.add(Action.RELEASE);
+        if(node.environnement.map[currentDog.x][currentDog.y].containsSheep)
+            possibleActions.add(Action.CATCH);
+        possibleActions = capteur.GetActionsPossibles(currentDog, node.environnement);
+        System.out.println("[max] Got Possible Actions");
+
         int count = 0;
         for(Action action : possibleActions){
             count++;
