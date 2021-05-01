@@ -17,16 +17,6 @@ public class Node {
     public Node(Environnement environnement, Dog activeDog, Action action) {
         this.environnement = new Environnement();
         InitializeNodeEnvironment(environnement);
-        /*
-
-    public Room[][] map;
-    public int size;
-    public int remainingSheeps;
-    public Enclos enclosDogAStar;
-    public Enclos enclosDogMiniMax;
-    public Dog dogAStar;
-    public Dog dogMiniMax;
-         */
 
 //        System.out.println("Node initialized correctly ! Size : "+this.environnement.size+" RemainingSheeps : "+this.environnement.remainingSheeps);
 
@@ -38,20 +28,21 @@ public class Node {
 
         mockEffecteur = new Effecteur();
 
-        System.out.println("[bef] Active dog ("+this.activeDog.myColor+") sheeps : " + this.activeDog.sheepCarried + " " +
+        /*System.out.println("[bef] Active dog ("+this.activeDog.myColor+") sheeps : " + this.activeDog.sheepCarried + " " +
                 "dogAStar sheeps : "+ this.environnement.dogAStar.sheepCarried+" " +
-                "dogMiniMax sheeps : "+this.environnement.dogAStar.sheepCarried);
+                "dogMiniMax sheeps : "+this.environnement.dogAStar.sheepCarried);*/
 
 
         mockEffecteur.Agir(action, this.activeDog, this.environnement);
 
-        System.out.println("[af] Active dog ("+this.activeDog.myColor+") sheeps : " + this.activeDog.sheepCarried + " " +
+        /*System.out.println("[af] Active dog ("+this.activeDog.myColor+") sheeps : " + this.activeDog.sheepCarried + " " +
                 "dogAStar sheeps : "+ this.environnement.dogAStar.sheepCarried+" " +
-                "dogMiniMax sheeps : "+this.environnement.dogMiniMax.sheepCarried);
+                "dogMiniMax sheeps : "+this.environnement.dogMiniMax.sheepCarried);*/
 
         isFinalState = this.environnement.MatchEnded();
         utility = this.environnement.dogMiniMax.score + this.environnement.dogMiniMax.sheepCarried
                 - this.environnement.dogAStar.score - this.environnement.dogAStar.sheepCarried;
+
 //        System.out.println("New node generated. Node active dog : "+activeDog.myColor+". " +
 //                "Node utility : "+utility+". Node is a final state ? "+isFinalState);
     }

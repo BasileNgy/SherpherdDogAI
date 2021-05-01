@@ -58,6 +58,14 @@ public class Capteur {
             if(envir.map[dog.x - 1][dog.y].color != dog.enemyColor)
             actionList.add(Action.GAUCHE);
         }
+        if(!IsThereRemainingSheeps(envir) && dog.sheepCarried == 0)
+            actionList.add(Action.SLEEP);
+
+        if(dog.AmIAtEnclos() && dog.sheepCarried > 0)
+            actionList.add(Action.RELEASE);
+
+        if(envir.map[dog.x][dog.y].containsSheep)
+            actionList.add(Action.CATCH);
 
         return actionList;
     }

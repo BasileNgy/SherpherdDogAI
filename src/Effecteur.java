@@ -31,8 +31,8 @@ public class Effecteur {
                 dog.sheepCarried++;
                 env.map[dog.x][dog.y].containsSheep = false;
                 env.remainingSheeps--;
-                System.out.println(dog.myColor+" dog caught a sheep : " +dog.sheepCarried);
-                System.out.println("dog minimax : " + env.dogMiniMax.sheepCarried+" dog astar : "+env.dogAStar.sheepCarried);
+                //System.out.println(dog.myColor+" dog caught a sheep : " +dog.sheepCarried);
+                //System.out.println("dog minimax : " + env.dogMiniMax.sheepCarried+" dog astar : "+env.dogAStar.sheepCarried);
             }
             case RELEASE -> {
                 dog.enclos.sheepsBrought += dog.sheepCarried;
