@@ -97,7 +97,7 @@ public class AgentMiniMax {
 
             int testUtility = recursiveResult.keySet().stream().findFirst().get();
 
-            if( testUtility > bestUtility) {
+            if(testUtility > bestUtility) {
                 bestAction = action;
                 bestUtility = testUtility;
             }
@@ -123,7 +123,7 @@ public class AgentMiniMax {
         }
 
         if(node.isFinalState){
-            System.out.println("MAX/RED est arrivé à un état final dont l'utilité est "+ node.utility+" au niveau "+currentDepth);
+            System.out.println("MIN/BLUE est arrivé à un état final dont l'utilité est "+ node.utility+" au niveau "+currentDepth);
             result.put(node.utility, Action.NOTHING);
             return result;
         }
@@ -144,6 +144,7 @@ public class AgentMiniMax {
             int txtcalcul = currentDepth +1;
             txt += "Création d'un node MAX/RED de niveau " + txtcalcul +" si MIN/BLUE choisi "+action;
             System.out.println(txt);
+
             HashMap<Integer, Action> recursiveResult = TourMax(testNode, maxDepth, currentDepth +1);
 
             int testUtility = recursiveResult.keySet().stream().findFirst().get();
