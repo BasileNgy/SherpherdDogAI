@@ -5,18 +5,21 @@ public class Node {
     public Effecteur mockEffecteur;
     public boolean isFinalState;
     public int utility;
+    public int depth;
 
-    public Node(Environnement environnement, Dog activeDog){
+    public Node(Environnement environnement, Dog activeDog, int depth){
         this.environnement = new Environnement();
         InitializeNodeEnvironment(environnement);
+        this.depth = depth;
         if(activeDog.myColor == DogColor.RED)
             this.activeDog = this.environnement.dogMiniMax;
         else this.activeDog = this.environnement.dogAStar;
     }
 
-    public Node(Environnement environnement, Dog activeDog, Action action) {
+    public Node(Environnement environnement, Dog activeDog, Action action, int depth) {
         this.environnement = new Environnement();
         InitializeNodeEnvironment(environnement);
+        this.depth = depth;
 
 //        System.out.println("Node initialized correctly ! Size : "+this.environnement.size+" RemainingSheeps : "+this.environnement.remainingSheeps);
 
@@ -40,8 +43,9 @@ public class Node {
                 "dogMiniMax sheeps : "+this.environnement.dogMiniMax.sheepCarried);*/
 
         isFinalState = this.environnement.MatchEnded();
-        utility = 2*this.environnement.dogMiniMax.score + this.environnement.dogMiniMax.sheepCarried
-                - 2*this.environnement.dogAStar.score - this.environnement.dogAStar.sheepCarried;
+        utility = (2*this.environnement.dogMiniMax.score + this.environnement.dogMiniMax.sheepCarried
+                - 2*this.environnement.dogAStar.score - this.environnement.dogAStar.sheepCarried) * 100
+                - this.depth;
 
 //        System.out.println("New node generated. Node active dog : "+activeDog.myColor+". " +
 //                "Node utility : "+utility+". Node is a final state ? "+isFinalState);
@@ -93,7 +97,7 @@ public class Node {
 
     }
 
-    public Node GenerateNextNode(Action action, Dog activeDog) {
-        return new Node(environnement, activeDog, action);
+    public Node GenerateNextNode(Action action, Dog activeDog, int depth) {
+        return new Node(environnement, activeDog, action, depth);
     }
 }

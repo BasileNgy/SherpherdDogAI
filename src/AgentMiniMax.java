@@ -39,7 +39,7 @@ public class AgentMiniMax {
         minimaxDog.score = environnement.dogMiniMax.score;
         minimaxDog.sheepCarried = environnement.dogMiniMax.sheepCarried;
 
-        Node initialNode = new Node(environnement, minimaxDog);
+        Node initialNode = new Node(environnement, minimaxDog, 0);
         System.out.println("Launching MiniMax");
         Action chosenAction = MiniMax(initialNode);
 
@@ -58,7 +58,7 @@ public class AgentMiniMax {
             System.out.print(action +" ");
         }
 
-        HashMap<Integer, Action> tourMaxResult = TourMax(initialNode, 9, 0);
+        HashMap<Integer, Action> tourMaxResult = TourMax(initialNode, 9, initialNode.depth);
 
         System.out.println("Getting Action");
         Action chosenAction = tourMaxResult.values().stream().findFirst().get();
@@ -95,7 +95,7 @@ public class AgentMiniMax {
 
         for(Action action : possibleActions){
 
-            Node testNode = node.GenerateNextNode(action, node.environnement.dogMiniMax);
+            Node testNode = node.GenerateNextNode(action, node.environnement.dogMiniMax, node.depth+1);
             String txt = "";
             for (int i = 0; i < currentDepth; i++) {
                 txt += "        ";
@@ -146,7 +146,7 @@ public class AgentMiniMax {
         ArrayList<Action> possibleActions = capteur.GetActionsPossibles(currentDog, node.environnement);
 
         for(Action action : possibleActions){
-            Node testNode = node.GenerateNextNode(action, node.environnement.dogAStar);
+            Node testNode = node.GenerateNextNode(action, node.environnement.dogAStar, node.depth+1);
             String txt = "";
             for (int i = 0; i < currentDepth; i++) {
                 txt += "        ";
