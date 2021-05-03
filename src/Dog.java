@@ -25,6 +25,6 @@ public class Dog {
     }
 
     public boolean AmIAtEnclos(){
-        return (x == enclos.x && y == enclos.y) ? true : false;
+        return x == enclos.x && y == enclos.y;
     }
 }

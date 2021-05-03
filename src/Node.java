@@ -61,6 +61,7 @@ public class Node {
                 environnement.dogAStar.enemyColor,
                 environnement.dogAStar.x,
                 environnement.dogAStar.y);
+        this.environnement.dogAStar.sheepCarried = environnement.dogAStar.sheepCarried;
 
         this.environnement.enclosDogMiniMax = new Enclos(
                 environnement.enclosDogMiniMax.x,
@@ -74,7 +75,7 @@ public class Node {
                 environnement.dogMiniMax.enemyColor,
                 environnement.dogMiniMax.x,
                 environnement.dogMiniMax.y);
-
+        this.environnement.dogMiniMax.sheepCarried = environnement.dogMiniMax.sheepCarried;
 
         this.environnement.size = environnement.size;
         this.environnement.map = new Room[this.environnement.size][this.environnement.size];

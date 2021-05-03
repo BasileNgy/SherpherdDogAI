@@ -48,7 +48,7 @@ public class AgentMiniMax {
     }
 
     private Action MiniMax(Node initialNode){
-        HashMap<Integer, Action> tourMaxResult = TourMax(initialNode, 6, 0);
+        HashMap<Integer, Action> tourMaxResult = TourMax(initialNode, 9, 0);
 
         System.out.println("Getting Action");
         Action chosenAction = tourMaxResult.values().stream().findFirst().get();
@@ -150,7 +150,6 @@ public class AgentMiniMax {
             int testUtility = recursiveResult.keySet().stream().findFirst().get();
 
             if( testUtility < bestUtility) {
-                //System.out.println("MIN/BLUE a trouvé une utilité de "+testUtility+" pour l'action "+action+" au niveau "+currentDepth);
                 bestAction = action;
                 bestUtility = testUtility;
             }
