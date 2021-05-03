@@ -40,8 +40,8 @@ public class Node {
                 "dogMiniMax sheeps : "+this.environnement.dogMiniMax.sheepCarried);*/
 
         isFinalState = this.environnement.MatchEnded();
-        utility = this.environnement.dogMiniMax.score + this.environnement.dogMiniMax.sheepCarried
-                - this.environnement.dogAStar.score - this.environnement.dogAStar.sheepCarried;
+        utility = 2*this.environnement.dogMiniMax.score + this.environnement.dogMiniMax.sheepCarried
+                - 2*this.environnement.dogAStar.score - this.environnement.dogAStar.sheepCarried;
 
 //        System.out.println("New node generated. Node active dog : "+activeDog.myColor+". " +
 //                "Node utility : "+utility+". Node is a final state ? "+isFinalState);
@@ -62,6 +62,7 @@ public class Node {
                 environnement.dogAStar.x,
                 environnement.dogAStar.y);
         this.environnement.dogAStar.sheepCarried = environnement.dogAStar.sheepCarried;
+        this.environnement.dogAStar.score = environnement.dogAStar.score;
 
         this.environnement.enclosDogMiniMax = new Enclos(
                 environnement.enclosDogMiniMax.x,
@@ -76,6 +77,7 @@ public class Node {
                 environnement.dogMiniMax.x,
                 environnement.dogMiniMax.y);
         this.environnement.dogMiniMax.sheepCarried = environnement.dogMiniMax.sheepCarried;
+        this.environnement.dogMiniMax.score = environnement.dogMiniMax.score;
 
         this.environnement.size = environnement.size;
         this.environnement.map = new Room[this.environnement.size][this.environnement.size];

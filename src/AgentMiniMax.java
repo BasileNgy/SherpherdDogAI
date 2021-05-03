@@ -36,18 +36,28 @@ public class AgentMiniMax {
                 environnement.dogMiniMax.x,
                 environnement.dogMiniMax.y
         );
+        minimaxDog.score = environnement.dogMiniMax.score;
+        minimaxDog.sheepCarried = environnement.dogMiniMax.sheepCarried;
 
         Node initialNode = new Node(environnement, minimaxDog);
         System.out.println("Launching MiniMax");
         Action chosenAction = MiniMax(initialNode);
 
         System.out.println("MiniMax Done");
-        effecteur.Agir(chosenAction, minimaxDog, environnement);
-
+        effecteur.Agir(chosenAction, maxDog, environnement);
         System.out.println("ActionApplied : "+chosenAction);
+
+        System.out.print("Position minimaxDog "+ environnement.dogMiniMax.x +":"+environnement.dogMiniMax.y);
+        System.out.print("\n");
     }
 
     private Action MiniMax(Node initialNode){
+        System.out.print("Actions possibles pour MAX/RED : ");
+        for(Action action : capteur.GetActionsPossibles(initialNode.activeDog, initialNode.environnement))
+        {
+            System.out.print(action +" ");
+        }
+
         HashMap<Integer, Action> tourMaxResult = TourMax(initialNode, 9, 0);
 
         System.out.println("Getting Action");

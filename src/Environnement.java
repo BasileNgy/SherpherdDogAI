@@ -55,9 +55,9 @@ public class Environnement {
                 n--;
             }
         }*/
-        //map[1][0].containsSheep = true;
-        map[2][1].containsSheep = true;
-        //map[0][2].containsSheep = true;
+        //map[2][0].containsSheep = true;
+        //map[1][1].containsSheep = true;
+        map[1][2].containsSheep = true;
         remainingSheeps ++;
     }
 
