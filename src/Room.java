@@ -16,7 +16,6 @@ public class Room implements Cloneable{
         containsDog = false;
         color = DogColor.BLACK;
     }
-
     public Object clone(){
         try
         {

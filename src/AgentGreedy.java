@@ -1,7 +1,7 @@
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-public class AgentAStar {
+public class AgentGreedy {
 
     private Dog dog;
     private Environnement environnement;
@@ -11,7 +11,7 @@ public class AgentAStar {
     private Capteur capteur;
     private Effecteur effecteur;
 
-    public AgentAStar(Environnement environnement, Dog dog)
+    public AgentGreedy(Environnement environnement, Dog dog)
     {
         this.dog = dog;
         this.environnement = environnement;
@@ -37,6 +37,7 @@ public class AgentAStar {
         // application de l'action
         effecteur.Agir(action, dog, environnement);
         System.out.println("A* Dog new position : " + dog.x+":"+dog.y);
+        System.out.println("Remaining Sheeps : "+environnement.remainingSheeps);
     }
 
     private void SetupObjective()
@@ -50,7 +51,7 @@ public class AgentAStar {
         else
         {
             //test si le mouton objectif est toujours présent sinon recalcule l'objectif
-            if(!environnement.map[currentObjectiveX][currentObjectiveY].containsSheep)
+            if( !environnement.map[currentObjectiveX][currentObjectiveY].containsSheep)
             {
                 Point2D objective = capteur.GetNearestObjective(dog, environnement);
                 currentObjectiveX = (int) objective.getX();

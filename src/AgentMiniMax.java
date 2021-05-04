@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class AgentMiniMax {
 
@@ -9,8 +8,9 @@ public class AgentMiniMax {
     private Capteur capteur;
     private Effecteur effecteur;
     private ArrayList<Node> nodeList;
+    private int maxDepth;
 
-    public AgentMiniMax(Environnement environnement, Dog minDog, Dog maxDog)
+    public AgentMiniMax(Environnement environnement, Dog minDog, Dog maxDog, int maxDepth)
     {
         this.environnement = environnement;
         this.maxDog  = maxDog;
@@ -18,52 +18,49 @@ public class AgentMiniMax {
 
         capteur = new Capteur();
         effecteur = new Effecteur();
+        this.maxDepth = maxDepth;
     }
 
     public void Resolution()
     {
-        System.out.println("Initializing node");
-
         Enclos minimaxEnclos = new Enclos(
-                environnement.enclosDogMiniMax.x,
-                environnement.enclosDogMiniMax.y,
-                environnement.enclosDogMiniMax.color
+                environnement.enclosAdverse.x,
+                environnement.enclosAdverse.y,
+                environnement.enclosAdverse.color
         );
-        Dog minimaxDog = new Dog(environnement.dogMiniMax.maxSheepCarried,
+        Dog minimaxDog = new Dog(environnement.dogAdverse.maxSheepCarried,
                 minimaxEnclos,
-                environnement.dogMiniMax.myColor,
-                environnement.dogMiniMax.enemyColor,
-                environnement.dogMiniMax.x,
-                environnement.dogMiniMax.y
+                environnement.dogAdverse.myColor,
+                environnement.dogAdverse.enemyColor,
+                environnement.dogAdverse.x,
+                environnement.dogAdverse.y
         );
-        minimaxDog.score = environnement.dogMiniMax.score;
-        minimaxDog.sheepCarried = environnement.dogMiniMax.sheepCarried;
+        minimaxDog.score = environnement.dogAdverse.score;
+        minimaxDog.sheepCarried = environnement.dogAdverse.sheepCarried;
 
         Node initialNode = new Node(environnement, minimaxDog, 0);
         System.out.println("Launching MiniMax");
-        Action chosenAction = MiniMax(initialNode);
+        Action chosenAction = MiniMax(initialNode, maxDepth);
 
-        System.out.println("MiniMax Done");
         effecteur.Agir(chosenAction, maxDog, environnement);
         System.out.println("ActionApplied : "+chosenAction);
 
-        System.out.print("Position minimaxDog "+ environnement.dogMiniMax.x +":"+environnement.dogMiniMax.y);
-        System.out.print("\n");
+        System.out.println("Position minimaxDog "+ environnement.dogAdverse.x +":"+environnement.dogAdverse.y);
     }
 
-    private Action MiniMax(Node initialNode){
+    private Action MiniMax(Node initialNode, int maxDepth){
         System.out.print("Actions possibles pour MAX/RED : ");
         for(Action action : capteur.GetActionsPossibles(initialNode.activeDog, initialNode.environnement))
         {
             System.out.print(action +" ");
         }
+        System.out.println();
 
-        Pair tourMaxResult = TourMax(initialNode, 9, initialNode.depth);
+        Pair tourMaxResult = TourMax(initialNode, maxDepth, initialNode.depth);
 
-        System.out.println("Getting Action");
-        Action chosenAction = tourMaxResult.getAction();
+        Action chosenAction = (Action) tourMaxResult.getSecond();
 
-        System.out.println("Got Action with Utility : "+tourMaxResult.getUtility());
+        System.out.println("Got Action with Utility : "+tourMaxResult.getFirst());
         return chosenAction;
 
     }
@@ -72,15 +69,7 @@ public class AgentMiniMax {
     {
         Pair result = new Pair(0, Action.NOTHING);
 
-        if(currentDepth >= maxDepth)
-        {
-            //System.out.println("[max] Max Depth Reached");
-            result.Put(node.utility, Action.NOTHING);
-            return result;
-        }
-
-        if(node.isFinalState){
-            System.out.println("MAX/RED est arrivé à un état final dont l'utilité est "+ node.utility+" au niveau "+currentDepth);
+        if(currentDepth >= maxDepth || node.isFinalState){
             result.Put(node.utility, Action.NOTHING);
             return result;
         }
@@ -89,31 +78,23 @@ public class AgentMiniMax {
         Action bestAction = null;
 
 
-        Dog currentDog = node.environnement.dogMiniMax;
+        Dog currentDog = node.environnement.dogAdverse;
 
         ArrayList<Action> possibleActions = capteur.GetActionsPossibles(currentDog, node.environnement);
 
         for(Action action : possibleActions){
 
-            Node testNode = node.GenerateNextNode(action, node.environnement.dogMiniMax, node.depth+1);
-            String txt = "";
-            for (int i = 0; i < currentDepth; i++) {
-                txt += "        ";
-            }
-            int txtcalcul = currentDepth +1;
-            txt += "Création d'un node MIN/BLUE de niveau " + txtcalcul +" si MAX/RED choisi "+action;
-            System.out.println(txt);
+            Node testNode = node.GenerateNextNode(action, node.environnement.dogAdverse, node.depth+1);
+
             Pair recursiveResult = TourMin(testNode, maxDepth, currentDepth + 1);
 
-            int testUtility = recursiveResult.getUtility();
+            int testUtility = (Integer) recursiveResult.getFirst();
 
             if(testUtility > bestUtility) {
                 bestAction = action;
                 bestUtility = testUtility;
             }
         }
-
-        //System.out.println("MAX/RED a conclu a une utilité de "+bestUtility+" pour l'action "+bestAction+" au niveau "+currentDepth);
 
         result.Put(bestUtility, bestAction);
         return result;
@@ -123,15 +104,7 @@ public class AgentMiniMax {
     {
         Pair result = new Pair(0, Action.NOTHING);
 
-        if(currentDepth >= maxDepth)
-        {
-            //System.out.println("[min] Max Depth Reached");
-            result.Put(node.utility, Action.NOTHING);
-            return result;
-        }
-
-        if(node.isFinalState){
-            System.out.println("MIN/BLUE est arrivé à un état final dont l'utilité est "+ node.utility+" au niveau "+currentDepth);
+        if(currentDepth >= maxDepth || node.isFinalState){
             result.Put(node.utility, Action.NOTHING);
             return result;
         }
@@ -139,23 +112,16 @@ public class AgentMiniMax {
         int bestUtility = Integer.MAX_VALUE;
         Action bestAction = null;
 
-        Dog currentDog = node.environnement.dogAStar;
+        Dog currentDog = node.environnement.dogHeuristic;
 
         ArrayList<Action> possibleActions = capteur.GetActionsPossibles(currentDog, node.environnement);
 
         for(Action action : possibleActions){
-            Node testNode = node.GenerateNextNode(action, node.environnement.dogAStar, node.depth+1);
-            String txt = "";
-            for (int i = 0; i < currentDepth; i++) {
-                txt += "        ";
-            }
-            int txtcalcul = currentDepth +1;
-            txt += "Création d'un node MAX/RED de niveau " + txtcalcul +" si MIN/BLUE choisi "+action;
-            System.out.println(txt);
+            Node testNode = node.GenerateNextNode(action, node.environnement.dogHeuristic, node.depth+1);
 
             Pair recursiveResult = TourMax(testNode, maxDepth, currentDepth +1);
 
-            int testUtility = recursiveResult.getUtility();
+            int testUtility = (Integer) recursiveResult.getFirst();
 
             if( testUtility < bestUtility) {
                 bestAction = action;
@@ -163,9 +129,8 @@ public class AgentMiniMax {
             }
 
         }
-
-        //System.out.println("MIN/BLUE a conclu a une utilité de "+bestUtility+" pour l'action "+bestAction+" au niveau "+currentDepth);
         result.Put(bestUtility, bestAction);
         return result;
     }
+
 }

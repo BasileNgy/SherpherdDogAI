@@ -1,22 +1,23 @@
-public class Pair {
-    int utility;
-    Action action;
+public class Pair <S,T>{
+    private S first;
+    private T second;
 
-    public Pair(int utility, Action action){
-        this.utility = utility;
-        this.action = action;
+    public Pair(S first, T second){
+        this.first = first;
+        this.second = second;
     }
 
-    public int getUtility() {
-        return utility;
+
+    public void Put(S first, T second){
+        this.first = first;
+        this.second = second;
     }
 
-    public Action getAction() {
-        return action;
+    public S getFirst() {
+        return first;
     }
 
-    public void Put(int utility, Action action){
-        this.utility = utility;
-        this.action = action;
+    public T getSecond() {
+        return second;
     }
 }
