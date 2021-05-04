@@ -20,12 +20,14 @@ public class AgentAlphaBeta {
         effecteur = new Effecteur();
     }
 
+    /*
+        Dans notre problème, nous sommes obligés de fixer une profondeur maximum car le jeu peu potentiellement
+        etre infini.
+     */
     public void Resolution()
     {
         minElagage = 0;                 //Permet de compter le nombre de branches élaguées par le joueur min
         maxElagage = 0;                 //Permet de compter le nombre de branches élaguées par le joueur max
-
-        System.out.println("Initializing node");
 
         /*
             On commence par créer une copie des éléments réels, afin de ne pas les modifier lors du calcul des actions
@@ -48,7 +50,7 @@ public class AgentAlphaBeta {
 
 
         /*
-        On crée ensuite le noeud initial, puis on lance l'élagage alpha beta pour choisir notre action
+            On crée ensuite le noeud initial, puis on lance l'élagage alpha beta pour choisir notre action
          */
         Node initialNode = new Node(environnement, minimaxDog, 0);
         System.out.println("Launching AlphaBeta");
@@ -70,9 +72,12 @@ public class AgentAlphaBeta {
         System.out.println();
 
         /*
-        AlphaBeta choisit sa solution en simulant la partie pour deux joueurs, min et max. Max va vouloir maximiser son
-        gain, min va chercher à minimiser le gain de max. On cherche à choisir la meilleure action possible pour notre
-        chien, on commence donc par lancer TourMax
+            AlphaBeta choisit sa solution en simulant la partie pour deux joueurs, min et max. Max va vouloir maximiser
+            son gain, min va chercher à minimiser le gain de max.
+            On cherche à choisir la meilleure action possible pour notre chien, on commence donc par lancer TourMax
+            Il s'agit du même fonctionnement que Minimax, seulement on va introduire une notion d'élaguage des branches
+            ne pouvant pas améliorer notre solution en maintenant un intervalle de valeurs acceptables. L'elagage alpha
+            beta est censé nous retourner la meme solution que minimax en un temps moindre du a l'elagage des branches
          */
         Pair tourMaxResult = TourMax(initialNode, maxDepth, initialNode.depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
@@ -85,13 +90,12 @@ public class AgentAlphaBeta {
 
 
     /*
-        TourMax va comparer l'utilité de tous ses noeuds enfants et va chosir l'action menant au noeud
+        TourMax va comparer l'utilité de tous ses noeuds enfants et va choisir l'action menant au noeud
         le plus prometteur
      */
     private Pair<Integer, Action> TourMax(Node node, int maxDepth, int currentDepth, int alpha, int beta)
     {
         Pair result = new Pair(0, Action.NOTHING);
-
 
         /*
             Si on trouve un noeud but ou que l'on atteint la profondeur max de l'arbre, on returne l'utilité du noeud
@@ -119,7 +123,7 @@ public class AgentAlphaBeta {
         /*
             Pour chaque action possible de la liste, on va générer le noeud qui découle de cette action. On va appeler
             TourMin à partir de ce noeud, et on va choisir l'action qui nous mène au meilleur noeud en comparant
-            les utilités
+            les utilités, tout en surveillant l'acceptabilité de la solution
          */
 
         for(Action action : possibleActions){
@@ -128,7 +132,6 @@ public class AgentAlphaBeta {
             Pair<Integer, Action> recursiveResult = TourMin(testNode, maxDepth, currentDepth + 1, alpha, beta);
 
             int testUtility = recursiveResult.getFirst();
-
             /*
                 Si on trouve une meilleure utilité pour une action que la meilleure utilité en mémoire, on vérifie que
                 cette valeur n'est pas en contradiction avec notre intervalle [alpha, beta].
@@ -136,7 +139,7 @@ public class AgentAlphaBeta {
                     En effet, nous nous trouvons dans TourMax, on est donc assurés de choisir une valeur au
                     moins > beta.
                     Or le max acceptable par l'itération récursive de TourMin précédant n'acceptera qu'une
-                    valeur <= à beta.
+                    valeur < à beta.
                     Inutile donc de continuer l'exploration, et on retourne l'utilité trouvée pour le noeud fils
                     que nous sommes en train de regarder.
                 *   Si on a une valeur < beta, on met à jour les bornes de notre intervalle en changeant alpha pour la
@@ -162,9 +165,21 @@ public class AgentAlphaBeta {
         return result;
     }
 
+
+    /*
+        TourMin va comparer l'utilité de tous ses noeuds enfants et va choisir l'action menant au noeud
+        le moins satisfaisant pour max, tout en surveillant l'acceptabilité de la solution
+     */
+
     private Pair<Integer, Action> TourMin(Node node, int maxDepth, int currentDepth, int alpha, int beta)
     {
         Pair result = new Pair(0, Action.NOTHING);
+
+
+        /*
+            Si on trouve un noeud but ou que l'on atteint la profondeur max de l'arbre, on retourne l'utilité du noeud
+            exploré
+         */
 
         if(node.isFinalState || currentDepth >= maxDepth)
         {
@@ -172,19 +187,43 @@ public class AgentAlphaBeta {
             return result;
         }
 
+        /*
+            Sinon, on initialise une variable temporaire à l'infini positive
+         */
         int bestUtility = Integer.MAX_VALUE;
         Action bestAction = null;
 
+        /*
+            On va ensuite générer les noeuds fils pour chaque action possible à partir du noeud courant. Pour cela on
+            commence par récupérer les actions possibles à partir du noeud courant
+         */
         Dog currentDog = node.environnement.dogHeuristic;
-
         ArrayList<Action> possibleActions = capteur.GetActionsPossibles(currentDog, node.environnement);
 
+        /*
+            Pour chaque action possible de la liste, on va générer le noeud qui découle de cette action. On va appeler
+            TourMax à partir de ce noeud, et on va choisir l'action qui nous mène au noeud le moins satisfaisant pour
+            max en comparant les utilités
+         */
         for(Action action : possibleActions){
             Node testNode = node.GenerateNextNode(action, node.environnement.dogHeuristic, node.depth+1);
 
             Pair<Integer, Action>  recursiveResult = TourMax(testNode, maxDepth, currentDepth +1, alpha, beta);
 
             int testUtility = recursiveResult.getFirst();
+            /*
+                Si on trouve une moins bonne utilité pour une action que la moins bonne des utilités en mémoire, on
+                vérifie que cette valeur n'est pas en contradiction avec notre intervalle [alpha, beta].
+                *   Si on trouve une valeur <= alpha dans TourMin, on peut arreter l'exploration ici.
+                    En effet, nous nous trouvons dans TourMin, on est donc assurés de choisir une valeur au
+                    moins < alpha.
+                    Or le min acceptable par l'itération récursive de TourMax précédant n'acceptera qu'une
+                    valeur > à alpha.
+                    Inutile donc de continuer l'exploration, et on retourne l'utilité trouvée pour le noeud fils
+                    que nous sommes en train de regarder.
+                *   Si on a une valeur > alpha, on met à jour les bornes de notre intervalle en changeant beta pour la
+                    valeur trouvée
+             */
             if( testUtility < bestUtility) {
                 bestAction = action;
                 bestUtility = testUtility;
@@ -198,6 +237,11 @@ public class AgentAlphaBeta {
             }
 
         }
+
+
+        /*
+            Enfin on retourne les valeurs retenues
+         */
         result.Put(bestUtility, bestAction);
         return result;
     }

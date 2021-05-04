@@ -10,9 +10,16 @@ public class Environnement {
     public Dog dogHeuristic;
     public Dog dogAdverse;
 
+    /*
+        Crée une instance de la classe pour copier un environnement par la suite
+     */
     public Environnement(){
         remainingSheeps = 0;
     }
+
+    /*
+    Crée une instance de la classe et l'initialise
+     */
     public Environnement(int n, int nbreSheep, Enclos enclosHeuristic, Enclos enclosAdverse, Dog dogHeuristic, Dog dogAdverse)
     {
         this.size = n;
@@ -26,6 +33,9 @@ public class Environnement {
         SetupInitialState(nbreSheep);
     }
 
+    /*
+        Initialise un environnement
+     */
     public void SetupInitialState(int nbreSheep)
     {
         for(int j=0;j<size;j++)
@@ -44,6 +54,10 @@ public class Environnement {
         SetupSheeps(nbreSheep);
     }
 
+    /*
+        Fait spawn des moutons a des positions aleatoires de la carte. Les moutons ne peuvent pas spawn sur les enclos.
+        Il ne peut y avoir qu'un mouton max par case
+     */
     public void SetupSheeps(int n)
     {
 
@@ -60,6 +74,11 @@ public class Environnement {
         }
     }
 
+    /*
+        Test l'etat final. Dans ce probleme un etat est considéré comme final s'il ne reste aucun mouton en liberté sur
+        le terrain et qu'aucun ne porte encore de moutons. Si un chien n'est pas encore rentré dans son enclos mais qu'il
+        ne porte par de mouton, l'etat est considéré comme final (on autorise le chien à s'endormir dans la prairie)
+     */
     public boolean MatchEnded(){
         return remainingSheeps == 0 && dogHeuristic.sheepCarried == 0 && dogAdverse.sheepCarried == 0;
     }

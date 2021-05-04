@@ -42,8 +42,8 @@ public class AgentGreedy {
 
     private void SetupObjective()
     {
-        //test si le nmbre max de moutons transportés est atteint et retour à l'enclos
-        if(dog.sheepCarried == dog.maxSheepCarried || !capteur.IsThereRemainingSheeps(environnement))
+        //test si le nombre max de moutons transportés est atteint et retour à l'enclos
+        if(dog.sheepCarried == dog.maxSheepCarried)
         {
             currentObjectiveX = dog.enclos.x;
             currentObjectiveY = dog.enclos.y;
@@ -56,10 +56,6 @@ public class AgentGreedy {
                 Point2D objective = capteur.GetNearestObjective(dog, environnement);
                 currentObjectiveX = (int) objective.getX();
                 currentObjectiveY = (int) objective.getY();
-                if(currentObjectiveX == -1 || currentObjectiveY == -1){
-                    currentObjectiveX = dog.enclos.x;
-                    currentObjectiveY = dog.enclos.y;
-                }
             }
         }
     }

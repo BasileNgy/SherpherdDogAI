@@ -4,39 +4,58 @@ import java.util.ArrayList;
 
 public class Capteur {
 
+    /*
+        Retourne vrai s'il reste des moutons à capturer, faux sinon
+     */
     public boolean IsThereRemainingSheeps(Environnement envir) {
         return (envir.remainingSheeps > 0);
     }
 
+    /*
+        Retourne la position du mouton le plus proche s'il en reste, celle de l'enclos associé au chien sinon
+     */
     public Point2D GetNearestObjective(Dog dog, Environnement envir) {
         int shortestManhattanDistance = 100;
-        int nearestSheepX = -1;
-        int nearestSheepY = -1;
+        int nearestObj = -1;
+        int nearestObjY = -1;
 
-        for (int j = 0; j < envir.size; j++)
-        {
-            for (int i = 0; i < envir.size; i++)
+        if(IsThereRemainingSheeps(envir)){
+            for (int j = 0; j < envir.size; j++)
             {
-                if(envir.map[i][j].containsSheep)
+                for (int i = 0; i < envir.size; i++)
                 {
-                    int valueCalculated = CalculManhanttanDistance(dog.x, dog.y, i, j);
-                    if(valueCalculated < shortestManhattanDistance)
+                    if(envir.map[i][j].containsSheep)
                     {
-                        shortestManhattanDistance = valueCalculated;
-                        nearestSheepX = i;
-                        nearestSheepY = j;
+                        int valueCalculated = CalculManhanttanDistance(dog.x, dog.y, i, j);
+                        if(valueCalculated < shortestManhattanDistance)
+                        {
+                            shortestManhattanDistance = valueCalculated;
+                            nearestObj = i;
+                            nearestObjY = j;
+                        }
                     }
-                }
 
+                }
             }
         }
-        return new Point2D.Float(nearestSheepX, nearestSheepY);
+        else{
+            nearestObj = dog.enclos.x;
+            nearestObjY = dog.enclos.y;
+        }
+        return new Point2D.Float(nearestObj, nearestObjY);
     }
 
+    /*
+        Calcule le nombre de déplacement à effectuer pour aller de la position actuelle du chien à celle de l'objet
+        passée en parametre
+     */
     public int CalculManhanttanDistance(int dogX, int dogY, int objX, int objY) {
         return Math.abs(Math.abs(dogX) - Math.abs(objX)) + Math.abs(Math.abs(dogY) - Math.abs(objY));
     }
 
+    /*
+        Retourne les actions possibles d'un chien pour une case à un moment donné de l'exécution
+     */
     public ArrayList<Action> GetActionsPossibles(Dog dog, Environnement envir) {
         ArrayList<Action> actionList = new ArrayList<>();
 

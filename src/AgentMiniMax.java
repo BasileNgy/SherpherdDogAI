@@ -21,8 +21,16 @@ public class AgentMiniMax {
         this.maxDepth = maxDepth;
     }
 
+    /*
+        Dans notre problème, nous sommes obligés de fixer une profondeur maximum car le jeu peu potentiellement
+        etre infini.
+     */
     public void Resolution()
     {
+
+        /*
+            On commence par créer une copie des éléments réels, afin de ne pas les modifier lors du calcul des actions
+         */
         Enclos minimaxEnclos = new Enclos(
                 environnement.enclosAdverse.x,
                 environnement.enclosAdverse.y,
@@ -38,6 +46,9 @@ public class AgentMiniMax {
         minimaxDog.score = environnement.dogAdverse.score;
         minimaxDog.sheepCarried = environnement.dogAdverse.sheepCarried;
 
+        /*
+            On crée ensuite le noeud initial, puis on lance minimax pour choisir notre action
+         */
         Node initialNode = new Node(environnement, minimaxDog, 0);
         System.out.println("Launching MiniMax");
         Action chosenAction = MiniMax(initialNode, maxDepth);
@@ -56,6 +67,11 @@ public class AgentMiniMax {
         }
         System.out.println();
 
+        /*
+            Minimax choisit sa solution en simulant la partie pour deux joueurs, min et max. Max va vouloir maximiser
+            son gain, min va chercher à minimiser le gain de max.
+            On cherche à choisir la meilleure action possible pour notre chien, on commence donc par lancer TourMax
+         */
         Pair tourMaxResult = TourMax(initialNode, maxDepth, initialNode.depth);
 
         Action chosenAction = (Action) tourMaxResult.getSecond();
@@ -65,63 +81,115 @@ public class AgentMiniMax {
 
     }
 
+
+    /*
+        TourMax va comparer l'utilité de tous ses noeuds enfants et va choisir l'action menant au noeud
+        le plus prometteur
+     */
     private Pair TourMax(Node node, int maxDepth, int currentDepth)
     {
         Pair result = new Pair(0, Action.NOTHING);
 
+
+        /*
+            Si on trouve un noeud but ou que l'on atteint la profondeur max de l'arbre, on returne l'utilité du noeud
+            exploré
+         */
         if(currentDepth >= maxDepth || node.isFinalState){
             result.Put(node.utility, Action.NOTHING);
             return result;
         }
 
+        /*
+            Sinon, on initialise une variable temporaire à l'infini négative
+         */
         int bestUtility = Integer.MIN_VALUE;
         Action bestAction = null;
 
-
+        /*
+            On va ensuite générer les noeuds fils pour chaque action possible à partir du noeud courant. Pour cela on
+            commence par récupérer les actions possibles à partir du noeud courant
+         */
         Dog currentDog = node.environnement.dogAdverse;
-
         ArrayList<Action> possibleActions = capteur.GetActionsPossibles(currentDog, node.environnement);
 
+        /*
+            Pour chaque action possible de la liste, on va générer le noeud qui découle de cette action. On va appeler
+            TourMin à partir de ce noeud, et on va choisir l'action qui nous mène au meilleur noeud en comparant
+            les utilités
+         */
         for(Action action : possibleActions){
 
             Node testNode = node.GenerateNextNode(action, node.environnement.dogAdverse, node.depth+1);
-
             Pair recursiveResult = TourMin(testNode, maxDepth, currentDepth + 1);
 
             int testUtility = (Integer) recursiveResult.getFirst();
-
+            /*
+                *   Si on trouve une meilleure utilité pour une action que la meilleure utilité en mémoire,
+                    on sauvegarde sa valeur et l'action menant au noeud possédant cette utilité
+                *   Sinon on continue notre exploration
+             */
             if(testUtility > bestUtility) {
                 bestAction = action;
                 bestUtility = testUtility;
             }
         }
+        /*
+            Enfin on retourne les valeurs retenues
+         */
 
         result.Put(bestUtility, bestAction);
         return result;
     }
 
+    /*
+        TourMin va comparer l'utilité de tous ses noeuds enfants et va choisir l'action menant au noeud
+        le moins satisfaisant pour max
+     */
     private Pair TourMin(Node node, int maxDepth, int currentDepth)
     {
         Pair result = new Pair(0, Action.NOTHING);
+
+        /*
+            Si on trouve un noeud but ou que l'on atteint la profondeur max de l'arbre, on retourne l'utilité du noeud
+            exploré
+         */
 
         if(currentDepth >= maxDepth || node.isFinalState){
             result.Put(node.utility, Action.NOTHING);
             return result;
         }
 
+        /*
+            Sinon, on initialise une variable temporaire à l'infini positive
+         */
         int bestUtility = Integer.MAX_VALUE;
         Action bestAction = null;
 
-        Dog currentDog = node.environnement.dogHeuristic;
 
+        /*
+            On va ensuite générer les noeuds fils pour chaque action possible à partir du noeud courant. Pour cela on
+            commence par récupérer les actions possibles à partir du noeud courant
+         */
+        Dog currentDog = node.environnement.dogHeuristic;
         ArrayList<Action> possibleActions = capteur.GetActionsPossibles(currentDog, node.environnement);
 
+        /*
+            Pour chaque action possible de la liste, on va générer le noeud qui découle de cette action. On va appeler
+            TourMax à partir de ce noeud, et on va choisir l'action qui nous mène au noeud le moins satisfaisant pour
+            max en comparant les utilités
+         */
         for(Action action : possibleActions){
             Node testNode = node.GenerateNextNode(action, node.environnement.dogHeuristic, node.depth+1);
 
             Pair recursiveResult = TourMax(testNode, maxDepth, currentDepth +1);
 
             int testUtility = (Integer) recursiveResult.getFirst();
+            /*
+                *   Si on trouve une moins bonne utilité pour une action que la moins bonne des utilités en mémoire,
+                    on sauvegarde sa valeur et l'action menant au noeud possédant cette utilité
+                *   Sinon on continue notre exploration
+             */
 
             if( testUtility < bestUtility) {
                 bestAction = action;
@@ -129,6 +197,11 @@ public class AgentMiniMax {
             }
 
         }
+
+
+        /*
+            Enfin on retourne les valeurs retenues
+         */
         result.Put(bestUtility, bestAction);
         return result;
     }

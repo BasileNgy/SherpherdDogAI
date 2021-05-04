@@ -1,3 +1,7 @@
+
+/*
+    Cette classe nous permet de parcourir l'ensemble des solutions lors du calcul de minimax et alphabeta
+ */
 public class Node {
 
     public Environnement environnement;
@@ -7,6 +11,9 @@ public class Node {
     public int utility;
     public int depth;
 
+    /*
+        Constructeur utilisé seulement pour créer le noeud initial
+     */
     public Node(Environnement environnement, Dog activeDog, int depth){
 
         this.environnement = new Environnement();
@@ -18,6 +25,10 @@ public class Node {
             this.activeDog = this.environnement.dogAdverse;
         else this.activeDog = this.environnement.dogHeuristic;
     }
+    /*
+        Nous permet de copier des noeuds et les données qui lui sont associées, pour permettre aux agents adverses de
+        "réfléchir" et prévoir l'application de leurs actions sans modifier l'environnement réel
+     */
 
     public Node(Environnement environnement, Dog activeDog, Action action, int depth) {
         this.environnement = new Environnement();
@@ -30,9 +41,10 @@ public class Node {
             this.activeDog = this.environnement.dogAdverse;
         else this.activeDog = this.environnement.dogHeuristic;
 
-
+        /*
+            Permet de générer le prochain noeud sans modifier l'environnement réel
+         */
         mockEffecteur = new Effecteur();
-
         mockEffecteur.Agir(action, this.activeDog, this.environnement);
 
         isFinalState = this.environnement.MatchEnded();
@@ -40,6 +52,11 @@ public class Node {
         CalculUtility();
     }
 
+    /*
+        Calcule l'utilité associée à un noeud. Nous avons choisi de mettre l'emphase sur les moutons qui ont été
+        effectivement rapportés à l'enclos, puis sur le nombre de moutons portés et enfin sur le nombre de déplacement
+        utilisés jusque là (symbolisé par la profondeur de l'arbre)
+     */
     private void CalculUtility(){
         if(this.depth%2 == 0){
             this.utility = (10*this.environnement.dogAdverse.score + this.environnement.dogAdverse.sheepCarried
@@ -53,6 +70,9 @@ public class Node {
         }
     }
 
+    /*
+        Crée une copie des instances de l'environnement réel pour analyser les actions sans le modifier
+     */
     public void CloneNode(Environnement environnement) {
 
         this.environnement.enclosHeuristic = new Enclos(
@@ -97,6 +117,9 @@ public class Node {
 
     }
 
+    /*
+        Permet de générer le noeud résultant de l'application d'une action sur le noeud node
+     */
     public Node GenerateNextNode(Action action, Dog activeDog, int depth) {
         return new Node(environnement, activeDog, action, depth);
     }

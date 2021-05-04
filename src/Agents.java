@@ -11,10 +11,11 @@ public class Agents {
     {
         this.environnement = environnement;
         agentGreedy = new AgentGreedy(environnement, environnement.dogHeuristic);
-//        agentMiniMax = new AgentMiniMax(environnement, environnement.dogMiniMax, 12);
-        agentAlphaBeta = new AgentAlphaBeta(environnement, environnement.dogAdverse, 22);
         System.out.println("A* Dog en haut à gauche");
-        System.out.println("MiniMax Dog en bas à droite\n");
+//        agentMiniMax = new AgentMiniMax(environnement, environnement.dogAdverse, 12);
+//        System.out.println("MiniMax Dog en bas à droite\n");
+        agentAlphaBeta = new AgentAlphaBeta(environnement, environnement.dogAdverse, 22);
+        System.out.println("AlphaBeta Dog en bas à droite\n");
         previousDogMoving = environnement.dogAdverse;
     }
 
@@ -37,6 +38,10 @@ public class Agents {
             System.out.println("Winner : " + winner);
             return;
         }
+
+        /*
+            Permet d'alterner le chien à faire bouger à chaque clic
+         */
         if(previousDogMoving == environnement.dogAdverse){
             System.out.println("Begin greedy Algorithm");
             agentGreedy.Resolution();
@@ -48,7 +53,6 @@ public class Agents {
 //            agentMiniMax.Resolution();
             System.out.println("Begin alpha beta Algorithm");
             agentAlphaBeta.Resolution();
-
             System.out.println("MinElagage : "+agentAlphaBeta.minElagage + " MaxElagage : "+ agentAlphaBeta.maxElagage +"\n");
 
             previousDogMoving = environnement.dogAdverse;
