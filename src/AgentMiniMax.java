@@ -58,30 +58,30 @@ public class AgentMiniMax {
             System.out.print(action +" ");
         }
 
-        HashMap<Integer, Action> tourMaxResult = TourMax(initialNode, 9, initialNode.depth);
+        Pair tourMaxResult = TourMax(initialNode, 9, initialNode.depth);
 
         System.out.println("Getting Action");
-        Action chosenAction = tourMaxResult.values().stream().findFirst().get();
+        Action chosenAction = tourMaxResult.getAction();
 
-        System.out.println("Got Action with Utility : "+tourMaxResult.keySet().stream().findFirst().get());
+        System.out.println("Got Action with Utility : "+tourMaxResult.getUtility());
         return chosenAction;
 
     }
 
-    private HashMap<Integer, Action> TourMax(Node node, int maxDepth, int currentDepth)
+    private Pair TourMax(Node node, int maxDepth, int currentDepth)
     {
-        HashMap<Integer, Action> result = new HashMap<>();
+        Pair result = new Pair(0, Action.NOTHING);
 
         if(currentDepth >= maxDepth)
         {
             //System.out.println("[max] Max Depth Reached");
-            result.put(node.utility, Action.NOTHING);
+            result.Put(node.utility, Action.NOTHING);
             return result;
         }
 
         if(node.isFinalState){
             System.out.println("MAX/RED est arrivé à un état final dont l'utilité est "+ node.utility+" au niveau "+currentDepth);
-            result.put(node.utility, Action.NOTHING);
+            result.Put(node.utility, Action.NOTHING);
             return result;
         }
 
@@ -103,38 +103,36 @@ public class AgentMiniMax {
             int txtcalcul = currentDepth +1;
             txt += "Création d'un node MIN/BLUE de niveau " + txtcalcul +" si MAX/RED choisi "+action;
             System.out.println(txt);
-            HashMap<Integer, Action> recursiveResult = TourMin(testNode, maxDepth, currentDepth + 1);
+            Pair recursiveResult = TourMin(testNode, maxDepth, currentDepth + 1);
 
-            int testUtility = recursiveResult.keySet().stream().findFirst().get();
+            int testUtility = recursiveResult.getUtility();
 
             if(testUtility > bestUtility) {
                 bestAction = action;
                 bestUtility = testUtility;
             }
-            else{
-            }
         }
 
         //System.out.println("MAX/RED a conclu a une utilité de "+bestUtility+" pour l'action "+bestAction+" au niveau "+currentDepth);
 
-        result.put(bestUtility, bestAction);
+        result.Put(bestUtility, bestAction);
         return result;
     }
 
-    private HashMap<Integer, Action> TourMin(Node node, int maxDepth, int currentDepth)
+    private Pair TourMin(Node node, int maxDepth, int currentDepth)
     {
-        HashMap<Integer, Action> result = new HashMap<>();
+        Pair result = new Pair(0, Action.NOTHING);
 
         if(currentDepth >= maxDepth)
         {
             //System.out.println("[min] Max Depth Reached");
-            result.put(node.utility, Action.NOTHING);
+            result.Put(node.utility, Action.NOTHING);
             return result;
         }
 
         if(node.isFinalState){
             System.out.println("MIN/BLUE est arrivé à un état final dont l'utilité est "+ node.utility+" au niveau "+currentDepth);
-            result.put(node.utility, Action.NOTHING);
+            result.Put(node.utility, Action.NOTHING);
             return result;
         }
 
@@ -155,21 +153,19 @@ public class AgentMiniMax {
             txt += "Création d'un node MAX/RED de niveau " + txtcalcul +" si MIN/BLUE choisi "+action;
             System.out.println(txt);
 
-            HashMap<Integer, Action> recursiveResult = TourMax(testNode, maxDepth, currentDepth +1);
+            Pair recursiveResult = TourMax(testNode, maxDepth, currentDepth +1);
 
-            int testUtility = recursiveResult.keySet().stream().findFirst().get();
+            int testUtility = recursiveResult.getUtility();
 
             if( testUtility < bestUtility) {
                 bestAction = action;
                 bestUtility = testUtility;
             }
-            else{
-            }
 
         }
 
         //System.out.println("MIN/BLUE a conclu a une utilité de "+bestUtility+" pour l'action "+bestAction+" au niveau "+currentDepth);
-        result.put(bestUtility, bestAction);
+        result.Put(bestUtility, bestAction);
         return result;
     }
 }
