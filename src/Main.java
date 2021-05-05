@@ -9,7 +9,7 @@ public class Main {
         Dog dog1 = new Dog(3,enclosAStar, enclosAStar.color, enclosMiniMax.color, enclosAStar.x, enclosAStar.y);
         Dog dog2 = new Dog(3,enclosMiniMax, enclosMiniMax.color, enclosAStar.color, enclosMiniMax.x, enclosMiniMax.y);
 
-        Environnement envir = new Environnement(n, 5, enclosAStar, enclosMiniMax, dog1, dog2);
+        Environnement envir = new Environnement(n, 3, enclosAStar, enclosMiniMax, dog1, dog2);
 
         Agents agentsManager = new Agents(envir);
 
