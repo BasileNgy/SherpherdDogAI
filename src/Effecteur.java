@@ -11,28 +11,31 @@ public class Effecteur {
         env.map[dog.x][dog.y].color = DogColor.BLACK;
 
         switch (act) {
-            case HAUT -> {
+            case HAUT :
                 dog.y--;
-            }
-            case DROITE -> {
+                break;
+            case DROITE :
                 dog.x++;
-            }
-            case BAS -> {
+                break;
+
+            case BAS :
                 dog.y++;
-            }
-            case GAUCHE -> {
+                break;
+
+            case GAUCHE :
                 dog.x--;
-            }
-            case CATCH -> {
+                break;
+            case CATCH :
                 dog.sheepCarried++;
                 env.map[dog.x][dog.y].containsSheep = false;
                 env.remainingSheeps--;
-            }
-            case RELEASE -> {
+                break;
+            case RELEASE :
                 dog.score += dog.sheepCarried;
                 dog.sheepCarried = 0;
-
-            }
+                break;
+            default :
+                break;
         }
         env.map[dog.x][dog.y].containsDog = true;
         env.map[dog.x][dog.y].color = dog.myColor;

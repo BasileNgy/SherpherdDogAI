@@ -94,10 +94,20 @@ public class AgentGreedy {
 
                 switch(action)
                 {
-                    case HAUT -> y--;
-                    case DROITE -> x++;
-                    case BAS -> y++;
-                    case GAUCHE -> x--;
+                    case HAUT:
+                        y--;
+                        break;
+                    case DROITE:
+                            x++;
+                            break;
+                    case BAS:
+                        y++;
+                        break;
+                    case GAUCHE:
+                        x--;
+                        break;
+                    default :
+                        break;
                 }
 
                 int calculedDistance = capteur.CalculManhanttanDistance(x, y, currentObjectiveX, currentObjectiveY);
